@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kneadthisone · knead the one you need</title>
+<meta name="description" content="Pick a little friend, knead its personality with sliders, and let it live on your desktop. Runs on the AI plan you already pay for.">
+<meta property="og:title" content="kneadthisone">
+<meta property="og:description" content="Pick a little friend, knead its personality with sliders, and let it live on your desktop. Runs on the AI plan you already pay for.">
+<meta property="og:image" content="https://kneadthisone.com/assets/og.png">
+<meta property="og:url" content="https://kneadthisone.com/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@500;600;700;800&amp;family=Figtree:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F2EA}
+a{color:#3B2A20}a:hover{color:#B4501F}
+:focus-visible{outline:2px dashed #3B2A20;outline-offset:3px}
+.btn{transition:transform .15s ease}
+.btn:hover{transform:translateY(-1px) rotate(-.6deg)}
+.rng{width:100%;accent-color:#B4501F;margin:2px 0 0;cursor:pointer}
+.tcard{background:transparent;border:2px solid transparent;border-radius:14px 10px 16px 9px / 10px 16px 9px 14px;padding:4px 2px 5px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;font:inherit;color:#3B2A20;min-width:0}
+.tcard:hover{background:#EFE7DA}
+.tcard img{height:42px;width:100%;object-fit:contain;display:block}
+.tcard b{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11.5px;letter-spacing:.5px}
+.tcard span{font-size:10.5px;color:#6E5A4B;line-height:1.2;text-align:center;min-height:2.4em;overflow-wrap:anywhere}
+.strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.mchip{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:0;min-height:48px;padding:5px 10px;font:inherit;text-align:left;cursor:pointer;border-radius:12px 8px 14px 7px / 8px 14px 7px 12px;color:#3B2A20;max-width:170px}
+.mchip time{font-family:'JetBrains Mono',monospace;font-size:11px;color:#6E5A4B}
+.mchip span{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.whyt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.whyt th{font-weight:600;text-align:right;color:#6E5A4B;font-size:11px;padding:2px 4px;white-space:nowrap}
+.whyt th:first-child,.whyt td:first-child{text-align:left}
+.whyt td{padding:3px 4px;border-top:1px solid #E2D7C6;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11.5px;white-space:nowrap}
+.whyt td:first-child{font-family:'Figtree',sans-serif;font-size:12.5px;white-space:normal}
+.char{transform-origin:50% 100%;animation-duration:calc(3.4s*var(--t,1));animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+@keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+@keyframes nod{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(3px) rotate(1.5deg)}}
+@keyframes hop{0%,100%{transform:translateY(0) scale(1.02,.98)}45%{transform:translateY(-16px) scale(.99,1.02)}}
+@keyframes jump{0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(-24px) rotate(-4deg)}70%{transform:translateY(-4px) rotate(3deg)}}
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.015,.985)}}
+@keyframes huff{0%,100%{transform:scale(1,1)}50%{transform:scale(1.05,.96)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}40%,70%{transform:rotate(-9deg)}}
+@keyframes munch{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@keyframes tap{0%,100%{transform:rotate(0)}50%{transform:rotate(-2.5deg) translateX(-3px)}}
+@keyframes jit{0%,100%{transform:translate(0,0)}25%{transform:translate(calc(-1px*var(--wob,2)),1px)}50%{transform:translate(calc(1px*var(--wob,2)),-1px)}75%{transform:translate(calc(-.6px*var(--wob,2)),-1px)}}
+@keyframes droop{0%,100%{transform:translateY(6px) rotate(3deg)}50%{transform:translateY(8px) rotate(4deg)}}
+@keyframes sleepb{0%,100%{transform:rotate(-7deg) scale(1,1)}50%{transform:rotate(-7deg) scale(1.02,.98)}}
+.m-idle{animation-name:breathe}
+.m-happy,.m-loved{animation-name:hop;animation-duration:calc(.8s*var(--t,1))}
+.m-excited{animation-name:jump;animation-duration:calc(.65s*var(--t,1))}
+.m-proud{animation-name:huff;animation-duration:calc(2.2s*var(--t,1))}
+.m-focused{animation-name:nod;animation-duration:calc(2.4s*var(--t,1))}
+.m-content{animation-name:sway;animation-duration:calc(4s*var(--t,1))}
+.m-sleepy{animation-name:sway;animation-duration:calc(5.5s*var(--t,1))}
+.m-asleep{animation-name:sleepb;animation-duration:5s}
+.m-eating{animation-name:munch;animation-duration:calc(.45s*var(--t,1))}
+.m-curious{animation-name:tilt;animation-duration:calc(3s*var(--t,1))}
+.m-restless{animation-name:tap;animation-duration:calc(.5s*var(--t,1))}
+.m-flat{animation-name:breathe;animation-duration:4.6s}
+.m-drained{animation-name:droop;animation-duration:4.6s}
+.m-anxious{animation-name:jit;animation-duration:.22s;animation-timing-function:linear}
+.m-grumpy{animation-name:huff;animation-duration:calc(1.4s*var(--t,1))}
+.tremble{animation:jit .3s linear infinite}
+@keyframes floatz{0%{transform:translate(0,6px) scale(.6);opacity:0}25%{opacity:1}100%{transform:translate(12px,-22px) scale(1.1);opacity:0}}
+@keyframes twinkle{0%,100%{transform:scale(.4) rotate(0);opacity:.2}50%{transform:scale(1) rotate(20deg);opacity:1}}
+@keyframes pop{0%,100%{transform:scale(.7);opacity:.3}50%{transform:scale(1.1);opacity:1}}
+@keyframes dripp{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(14px);opacity:0}}
+@keyframes fall{0%{transform:translateY(0);opacity:1}100%{transform:translateY(16px);opacity:0}}
+.fx *{transform-box:fill-box;transform-origin:center}
+.z{animation:floatz 2.8s ease-out infinite}.z2{animation:floatz 2.8s ease-out .9s infinite}.z3{animation:floatz 2.8s ease-out 1.8s infinite}
+.tw{animation:twinkle 1.2s ease-in-out infinite}.tw2{animation:twinkle 1.2s ease-in-out .4s infinite}
+.pp{animation:pop 1.4s ease-in-out infinite}.pp2{animation:pop 1.4s ease-in-out .25s infinite}.pp3{animation:pop 1.4s ease-in-out .5s infinite}
+.dr{animation:dripp 1.5s ease-in infinite}
+.cr{animation:fall .9s ease-in infinite}.cr2{animation:fall .9s ease-in .3s infinite}.cr3{animation:fall .9s ease-in .6s infinite}
+@keyframes walk{0%{left:6%;transform:scaleX(1)}46%{left:58%;transform:scaleX(1)}50%{left:58%;transform:scaleX(-1)}96%{left:6%;transform:scaleX(-1)}100%{left:6%;transform:scaleX(1)}}
+@keyframes step{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes waddle{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.walker{position:absolute;bottom:14%;width:22%;animation:walk 16s linear infinite}
+
+.waddle{animation:waddle 1.2s ease-in-out infinite;transform-origin:50% 100%}
+.idle{animation:breathe 3.6s ease-in-out infinite;transform-origin:50% 100%}
+.rig{position:relative;--d:1}
+.rig .all{position:absolute;inset:0;transform-origin:50% 100%}
+.rig img{position:absolute;display:block;pointer-events:none}
+.rig .p{animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.rig .all{animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+@keyframes k-sw{0%,100%{rotate:var(--a1)}50%{rotate:var(--a2)}}
+@keyframes k-bob{0%,100%{translate:0 0}50%{translate:0 var(--by)}}
+@keyframes k-breathe{0%,100%{scale:1 1}50%{scale:1.012 .982}}
+@keyframes k-hop{0%,100%{translate:0 0;scale:1.04 .95}12%{scale:1 1}45%{translate:0 var(--hy);scale:.97 1.04}80%{translate:0 0;scale:1 1}}
+@keyframes k-gallop{0%,100%{translate:0 0;rotate:0deg}25%{translate:0 var(--by);rotate:calc(var(--d)*-2.5deg)}50%{translate:0 0;rotate:0deg}75%{translate:0 calc(var(--by)*.4);rotate:calc(var(--d)*2deg)}}
+@keyframes k-waddle{0%,100%{rotate:-5deg;translate:0 0}25%{translate:0 -4px}50%{rotate:5deg;translate:0 0}75%{translate:0 -4px}}
+@keyframes k-jit{0%,100%{translate:0 0}25%{translate:-2px 1px}50%{translate:2px -1px}75%{translate:-1px -1px}}
+@keyframes k-tilt{0%,100%{rotate:0deg}30%,70%{rotate:var(--a1)}}
+@keyframes k-twitch{0%,86%,100%{rotate:0deg}90%{rotate:var(--a1)}94%{rotate:0deg}97%{rotate:calc(var(--a1)*.5)}}
+@keyframes k-sink{0%,100%{translate:0 4px;scale:1 .97}50%{translate:0 6px;scale:1.005 .96}}
+
+/* idle */
+.a-idle .all{animation-name:k-breathe;animation-duration:calc(3.2s*var(--t,1))}
+.a-idle .r-tail{--a1:calc(var(--d)*-5deg);--a2:calc(var(--d)*6deg);animation-name:k-sw;animation-duration:calc(2.8s*var(--t,1))}
+.a-idle .r-head{--a1:calc(var(--hk,1)*-1.5deg);--a2:calc(var(--hk,1)*2deg);animation-name:k-sw;animation-duration:calc(3.2s*var(--t,1))}
+.a-idle .r-earA{--a1:-14deg;animation-name:k-twitch;animation-duration:calc(4.2s*var(--t,1))}
+.a-idle .r-earB{--a1:-3deg;--a2:4deg;animation-name:k-sw;animation-duration:calc(3.4s*var(--t,1))}
+.a-idle .r-flipL{--a1:-3deg;--a2:4deg;animation-name:k-sw;animation-duration:calc(3s*var(--t,1))}
+.a-idle .r-flipR{--a1:3deg;--a2:-4deg;animation-name:k-sw;animation-duration:calc(3s*var(--t,1))}
+
+/* walk */
+.a-walk .all{--by:-5px;animation-name:k-bob;animation-duration:calc(.45s*var(--t,1))}
+.a-walk .r-legNF,.a-walk .r-legFH{--a1:-16deg;--a2:16deg;animation-name:k-sw;animation-duration:calc(.9s*var(--t,1))}
+.a-walk .r-legFF,.a-walk .r-legNH{--a1:16deg;--a2:-16deg;animation-name:k-sw;animation-duration:calc(.9s*var(--t,1))}
+.a-walk .r-tail{--a1:calc(var(--d)*-8deg);--a2:calc(var(--d)*8deg);animation-name:k-sw;animation-duration:calc(.9s*var(--t,1))}
+.a-walk .r-head{--a1:calc(var(--hk,1)*-3deg);--a2:calc(var(--hk,1)*2deg);animation-name:k-sw;animation-duration:calc(.45s*var(--t,1))}
+.a-walk .r-earA{--a1:-6deg;--a2:4deg;animation-name:k-sw;animation-duration:calc(.45s*var(--t,1))}
+.a-walk .r-earB{--a1:-6deg;--a2:8deg;animation-name:k-sw;animation-duration:calc(.45s*var(--t,1))}
+.a-walk .r-flipL{--a1:-4deg;--a2:18deg;animation-name:k-sw;animation-duration:calc(.9s*var(--t,1))}
+.a-walk .r-flipR{--a1:4deg;--a2:-18deg;animation-name:k-sw;animation-duration:calc(.9s*var(--t,1));animation-delay:calc(-.45s*var(--t,1))}
+.nolegs.a-walk .all{--hy:-16px;animation-name:k-hop;animation-duration:calc(.7s*var(--t,1))}
+.waddler.a-walk .all{animation-name:k-waddle;animation-duration:calc(.9s*var(--t,1))}
+
+/* run */
+.a-run .all{--by:-10px;animation-name:k-gallop;animation-duration:calc(.44s*var(--t,1))}
+.a-run .r-legNF,.a-run .r-legFF{--a1:calc(var(--d)*-34deg);--a2:calc(var(--d)*22deg);animation-name:k-sw;animation-duration:calc(.44s*var(--t,1))}
+.a-run .r-legFF{animation-delay:calc(-.07s*var(--t,1))}
+.a-run .r-legNH,.a-run .r-legFH{--a1:calc(var(--d)*24deg);--a2:calc(var(--d)*-30deg);animation-name:k-sw;animation-duration:calc(.44s*var(--t,1));animation-delay:calc(-.2s*var(--t,1))}
+.a-run .r-legFH{animation-delay:calc(-.27s*var(--t,1))}
+.a-run .r-tail{--a1:calc(var(--d)*-22deg);--a2:calc(var(--d)*-12deg);animation-name:k-sw;animation-duration:calc(.22s*var(--t,1))}
+.a-run .r-head{--a1:calc(var(--d)*var(--hk,1)*3deg);--a2:calc(var(--d)*var(--hk,1)*-3deg);animation-name:k-sw;animation-duration:calc(.44s*var(--t,1))}
+.a-run .r-earA,.a-run .r-earB{--a1:-18deg;--a2:-8deg;animation-name:k-sw;animation-duration:calc(.22s*var(--t,1))}
+.a-run .r-flipL{--a1:-10deg;--a2:40deg;animation-name:k-sw;animation-duration:calc(.3s*var(--t,1))}
+.a-run .r-flipR{--a1:10deg;--a2:-40deg;animation-name:k-sw;animation-duration:calc(.3s*var(--t,1))}
+.nolegs.a-run .all{--hy:-30px;animation-name:k-hop;animation-duration:calc(.48s*var(--t,1))}
+.waddler.a-run .all{animation-name:k-waddle;animation-duration:calc(.45s*var(--t,1))}
+
+/* happy */
+.a-happy .all{--hy:-14px;animation-name:k-hop;animation-duration:calc(.55s*var(--t,1))}
+.a-happy .r-tail{--a1:calc(var(--d)*-24deg);--a2:calc(var(--d)*20deg);animation-name:k-sw;animation-duration:calc(.2s*var(--t,1))}
+.a-happy .r-head{--a1:calc(var(--hk,1)*-6deg);--a2:calc(var(--hk,1)*6deg);animation-name:k-sw;animation-duration:calc(.55s*var(--t,1))}
+.a-happy .r-earA{--a1:-14deg;--a2:6deg;animation-name:k-sw;animation-duration:calc(.28s*var(--t,1))}
+.a-happy .r-earB{--a1:-10deg;--a2:12deg;animation-name:k-sw;animation-duration:calc(.28s*var(--t,1))}
+.a-happy .r-flipL{--a1:0deg;--a2:45deg;animation-name:k-sw;animation-duration:calc(.25s*var(--t,1))}
+.a-happy .r-flipR{--a1:0deg;--a2:-45deg;animation-name:k-sw;animation-duration:calc(.25s*var(--t,1))}
+.a-happy .r-legNF,.a-happy .r-legFF{--a1:calc(var(--d)*-6deg);--a2:calc(var(--d)*8deg);animation-name:k-sw;animation-duration:calc(.55s*var(--t,1))}
+
+/* curious */
+.a-curious .r-head{--a1:calc(var(--d)*var(--hk,1)*-13deg);animation-name:k-tilt;animation-duration:calc(3s*var(--t,1))}
+.a-curious .all{animation-name:k-breathe;animation-duration:calc(3s*var(--t,1))}
+.a-curious .r-earA{--a1:-10deg;animation-name:k-tilt;animation-duration:calc(3s*var(--t,1))}
+.a-curious .r-earB{--a1:-14deg;animation-name:k-tilt;animation-duration:calc(3s*var(--t,1))}
+.a-curious .r-tail{--a1:calc(var(--d)*-4deg);--a2:calc(var(--d)*10deg);animation-name:k-sw;animation-duration:calc(1.6s*var(--t,1))}
+.a-curious .r-flipL{--a1:0deg;--a2:14deg;animation-name:k-sw;animation-duration:calc(1.5s*var(--t,1))}
+.a-curious .r-flipR{--a1:0deg;--a2:-6deg;animation-name:k-sw;animation-duration:calc(1.5s*var(--t,1))}
+.nohead.a-curious .all{--a1:calc(var(--d)*-6deg);animation-name:k-tilt;animation-duration:calc(3s*var(--t,1))}
+
+/* eat */
+.a-eat .r-head{--a1:calc(var(--d)*var(--hk,1)*10deg);--a2:calc(var(--d)*var(--hk,1)*18deg);animation-name:k-sw;animation-duration:calc(.42s*var(--t,1))}
+.a-eat .all{animation-name:k-breathe;animation-duration:calc(2.4s*var(--t,1))}
+.a-eat .r-tail{--a1:calc(var(--d)*-4deg);--a2:calc(var(--d)*8deg);animation-name:k-sw;animation-duration:calc(1.4s*var(--t,1))}
+.a-eat .r-earA,.a-eat .r-earB{--a1:-4deg;--a2:4deg;animation-name:k-sw;animation-duration:calc(.42s*var(--t,1))}
+.a-eat .r-flipL{--a1:4deg;--a2:10deg;animation-name:k-sw;animation-duration:calc(.42s*var(--t,1))}
+.a-eat .r-flipR{--a1:-4deg;--a2:-10deg;animation-name:k-sw;animation-duration:calc(.42s*var(--t,1))}
+.nohead.a-eat .all{--a1:calc(var(--d)*2deg);--a2:calc(var(--d)*5deg);animation-name:k-sw;animation-duration:calc(.42s*var(--t,1))}
+
+/* sleep: legs fold under, body settles, head and tail curl */
+.a-sleep .all{animation-name:k-sleep;animation-duration:4.2s}
+.a-sleep:not(.nolegs) .all{translate:0 var(--sl,18%)}
+.a-sleep .r-head{rotate:calc(var(--d)*var(--hk,1)*18deg);translate:0 7%}
+.a-sleep .r-tail{rotate:calc(var(--d)*-38deg)}
+.a-sleep .r-earA{rotate:-48deg}
+.a-sleep .r-earB{rotate:22deg}
+.a-sleep .r-flipL{rotate:6deg}
+.a-sleep .r-flipR{rotate:-6deg}
+.a-sleep .r-legNF,.a-sleep .r-legFF{scale:1 .42;rotate:calc(var(--d)*-14deg)}
+.a-sleep .r-legNH,.a-sleep .r-legFH{scale:1 .42;rotate:calc(var(--d)*14deg)}
+@keyframes k-sleep{0%,100%{scale:1.01 .97}50%{scale:1.02 .99}}
+
+/* nervous */
+.a-nervous .all{animation-name:k-jit;animation-duration:.2s;animation-timing-function:linear}
+.a-nervous .r-tail{rotate:calc(var(--d)*-34deg)}
+.a-nervous .r-head{rotate:calc(var(--d)*var(--hk,1)*7deg);translate:0 2.5%}
+.a-nervous .r-earA{rotate:-30deg}
+.a-nervous .r-earB{rotate:14deg}
+.a-nervous .r-flipL{rotate:-6deg}
+.a-nervous .r-flipR{rotate:6deg}
+.a-nervous .r-legNH,.a-nervous .r-legFH{rotate:calc(var(--d)*-6deg)}
+
+/* sad / drained */
+.a-sad .all{animation-name:k-sink;animation-duration:calc(4.6s*var(--t,1))}
+.a-sad .r-head{rotate:calc(var(--d)*var(--hk,1)*14deg);translate:0 4%}
+.a-sad .r-tail{rotate:calc(var(--d)*-26deg)}
+.a-sad .r-earA{rotate:-38deg}
+.a-sad .r-earB{rotate:18deg}
+.a-sad .r-flipL{rotate:-2deg}
+.a-sad .r-flipR{rotate:2deg}
+/* grumpy */
+@keyframes k-huff{0%,100%{scale:1 1}50%{scale:1.035 .965}}
+.a-grumpy .all{animation-name:k-huff;animation-duration:calc(1.3s*var(--t,1))}
+.a-grumpy .r-tail{--a1:calc(var(--d)*-22deg);--a2:calc(var(--d)*14deg);animation-name:k-sw;animation-duration:calc(.32s*var(--t,1))}
+.a-grumpy .r-head{rotate:calc(var(--d)*var(--hk,1)*6deg);translate:0 2%}
+.a-grumpy .r-earA{rotate:-22deg}
+.a-grumpy .r-earB{rotate:10deg}
+.a-grumpy .r-flipL{--a1:-8deg;--a2:2deg;animation-name:k-sw;animation-duration:calc(.32s*var(--t,1))}
+.a-grumpy .r-flipR{--a1:8deg;--a2:-2deg;animation-name:k-sw;animation-duration:calc(.32s*var(--t,1))}
+.a-grumpy .r-legNF{--a1:0deg;--a2:calc(var(--d)*-10deg);animation-name:k-sw;animation-duration:calc(.65s*var(--t,1))}
+@media (prefers-reduced-motion: reduce){.rig .p,.rig .all{animation:none!important}}
+
+@media (prefers-reduced-motion: reduce){.char,.tremble,.walker,.walker img,.waddle,.idle,.fx *{animation:none!important}}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<template id="page-template">
+<div style="min-height: 100vh; background: #F6F2EA; color: #3B2A20; font-family: 'Figtree', system-ui, sans-serif; font-size: 16px; line-height: 1.55; overflow-x: hidden">
+<svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false"><defs>
+<filter id="crayon" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="g"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="g" scale="2.4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter>
+</defs></svg>
+
+<!-- NAV -->
+<nav style="max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+<a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #3B2A20">
+<img src="assets/rabbit.png" alt="" style="height: 40px; width: auto">
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 24px; letter-spacing: -0.5px; line-height: 1">kneadthisone</span>
+</a>
+<div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap; font-size: 15px; font-weight: 600">
+<a href="#playground" style="text-decoration: none">Try it</a>
+<a href="#how" style="text-decoration: none">How it works</a>
+<a href="actions.html" style="text-decoration: none">Animations</a>
+<a href="#feedback" style="text-decoration: none">Feedback</a>
+<span style="font-family: 'Shantell Sans', cursive; font-size: 14px; font-weight: 700; padding: 2px 12px; color: #FFFFFF; background: #B4501F; border-radius: 14px 6px 16px 7px / 7px 16px 6px 14px; transform: rotate(-3deg); display: inline-block">demo</span>
+</div>
+</nav>
+
+<!-- HERO -->
+<header id="top" style="max-width: 1200px; margin: 0 auto; padding: 36px 24px 64px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 44px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 22px">
+<span style="align-self: flex-start; font-size: 13.5px; font-weight: 600; color: #6E5A4B; background: #FFFDF8; border: 1.5px solid #E2D7C6; padding: 4px 12px; border-radius: 999px">A tiny companion for your desktop</span>
+<h1 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: clamp(44px, 6vw, 76px); line-height: 1.03; letter-spacing: -1.6px">Knead the one <span style="position: relative; white-space: nowrap">you need.<svg viewBox="0 0 300 22" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; left: 0; bottom: -12px; width: 100%; height: 18px"><path d="M4 14 C60 6 120 18 180 10 C230 4 270 12 296 8" fill="none" stroke="#E0A24A" stroke-width="8" stroke-linecap="round" filter="url(#crayon)"></path></svg></span></h1>
+<p style="margin: 0; max-width: 520px; font-size: 19px; color: #6E5A4B">Pick a little friend, shape its personality with a few sliders, and let it live on your desktop. It runs on the AI plan you already pay for, so there's nothing extra to buy.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="#playground" class="btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 26px; background: #3B2A20; color: #FFFDF8; font-weight: 600; font-size: 17px; border-radius: 22px 10px 24px 12px / 12px 24px 10px 22px">Start kneading
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<a href="#how" class="btn" style="text-decoration: none; display: inline-flex; align-items: center; min-height: 52px; padding: 0 22px; background: #FFFDF8; color: #3B2A20; font-weight: 600; font-size: 17px; border: 2px solid #3B2A20; border-radius: 10px 22px 12px 24px / 24px 12px 22px 10px">How it works</a>
+</div>
+<p style="margin: 0; font-size: 14px; color: #6E5A4B">Free to play with. You only sign up when you download.</p>
+</div>
+
+<!-- desktop mock -->
+<div style="position: relative; width: 100%; max-width: 580px; justify-self: center">
+<div style="position: relative; width: 100%; aspect-ratio: 1.3; background: #EAF0EC; border: 2.5px solid #3B2A20; border-radius: 22px 28px 20px 30px / 28px 20px 30px 22px; overflow: hidden">
+<div style="position: absolute; left: 0; right: 0; top: 0; height: 30px; background: #FFFDF8; border-bottom: 2px solid #3B2A20; display: flex; align-items: center; gap: 7px; padding: 0 12px">
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #D9774A"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #E0B04B"></span><span style="width: 10px; height: 10px; border-radius: 50%; background: #8FA35A"></span>
+<span style="margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E5A4B">Tue 11:40 pm</span>
+</div>
+<div style="position: absolute; left: 6%; top: 18%; width: 46%; background: #FFFDF8; border: 2px solid #3B2A20; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 11px; font-weight: 700; color: #6E5A4B">essay_final_v3.docx</span>
+<span style="height: 6px; border-radius: 3px; background: #E2D7C6; width: 92%"></span><span style="height: 6px; border-radius: 3px; background: #E2D7C6; width: 80%"></span><span style="height: 6px; border-radius: 3px; background: #E2D7C6; width: 86%"></span><span style="height: 6px; border-radius: 3px; background: #E2D7C6; width: 40%"></span>
+</div>
+<div style="position: absolute; right: 5%; top: 14%; width: 42%; display: flex; flex-direction: column; align-items: flex-end; gap: 4px">
+<div style="background: #FFFDF8; border: 2px solid #3B2A20; border-radius: 16px 18px 4px 16px / 18px 16px 4px 18px; padding: 8px 12px; font-family: 'Shantell Sans', cursive; font-size: 14px; line-height: 1.3">It's late. Save it, sleep, finish at 7?</div>
+<div role="img" aria-label="Rabbit companion talking" style="width: 52%; margin-right: 6%"><div class="rig nolegs nohead a-happy" style="--d: 1; --hk: 1; --sl: 0.0%; width: 100%; aspect-ratio: 543 / 640"><div class="all"><img class="p r-earA" src="assets/rabbit-earA.png" alt="" style="left: 50.46%; top: 1.88%; width: 29.10%; transform-origin: 35.4% 86.4%; z-index: 2"><img class="p r-earB" src="assets/rabbit-earB.png" alt="" style="left: 2.21%; top: 26.56%; width: 38.49%; transform-origin: 83.3% 27.9%; z-index: 2"><img class="p r-tail" src="assets/rabbit-tail.png" alt="" style="left: 81.40%; top: 68.12%; width: 16.39%; transform-origin: 33.7% 51.0%; z-index: 2"><img src="assets/rabbit-body.png" alt="" style="left: 0; top: 0; width: 100%; z-index: 3"></div></div></div>
+</div>
+<div class="walker" role="img" aria-label="Cat companion walking along the desktop"><div class="rig a-walk" style="--d: 1; --hk: 1; --sl: 21.3%; width: 100%; aspect-ratio: 640 / 510"><div class="all"><img class="p r-legFH" src="assets/cat-legFH.png" alt="" style="left: 23.59%; top: 56.08%; width: 20.16%; transform-origin: 45.7% 14.9%; z-index: 1"><img class="p r-legFF" src="assets/cat-legFF.png" alt="" style="left: 50.16%; top: 56.08%; width: 15.47%; transform-origin: 51.5% 15.0%; z-index: 1"><img class="p r-tail" src="assets/cat-tail.png" alt="" style="left: 1.56%; top: 2.16%; width: 25.78%; transform-origin: 54.5% 74.4%; z-index: 2"><img class="p r-legNH" src="assets/cat-legNH.png" alt="" style="left: 10.00%; top: 54.12%; width: 17.34%; transform-origin: 41.4% 16.1%; z-index: 2"><img class="p r-legNF" src="assets/cat-legNF.png" alt="" style="left: 61.09%; top: 54.12%; width: 27.19%; transform-origin: 40.8% 19.1%; z-index: 2"><img src="assets/cat-body.png" alt="" style="left: 0; top: 0; width: 100%; z-index: 3"><img class="p r-head" src="assets/cat-head.png" alt="" style="left: 57.19%; top: 5.29%; width: 41.25%; transform-origin: 40.2% 83.3%; z-index: 4"></div></div></div>
+<div role="img" aria-label="Penguin companion" style="position: absolute; right: 7%; bottom: 13%; width: 13%"><div class="rig nolegs nohead waddler a-walk" style="--d: 1; --hk: 1; --sl: 0.0%; width: 100%; aspect-ratio: 475 / 640"><div class="all"><img class="p r-flipL" src="assets/penguin-flipL.png" alt="" style="left: 2.53%; top: 27.19%; width: 32.21%; transform-origin: 68.0% 14.3%; z-index: 2"><img class="p r-flipR" src="assets/penguin-flipR.png" alt="" style="left: 65.47%; top: 27.19%; width: 32.00%; transform-origin: 23.0% 13.9%; z-index: 2"><img src="assets/penguin-body.png" alt="" style="left: 0; top: 0; width: 100%; z-index: 3"></div></div></div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 13%; background: #FFFDF8; border-top: 2px solid #3B2A20; display: flex; align-items: center; justify-content: center; gap: 10px">
+<span style="width: 22px; height: 22px; border-radius: 6px; background: #D9774A; border: 1.5px solid #3B2A20"></span><span style="width: 22px; height: 22px; border-radius: 6px; background: #7FA3C4; border: 1.5px solid #3B2A20"></span><span style="width: 22px; height: 22px; border-radius: 6px; background: #E0B04B; border: 1.5px solid #3B2A20"></span><span style="width: 22px; height: 22px; border-radius: 6px; background: #8FA35A; border: 1.5px solid #3B2A20"></span>
+</div>
+</div>
+<svg width="70" height="70" viewBox="0 0 70 70" aria-hidden="true" style="position: absolute; left: -24px; bottom: -22px"><path d="M35 6 L41 27 L63 29 L45 41 L52 62 L35 49 L18 62 L25 41 L7 29 L29 27 Z" fill="#E0B04B" stroke="#3B2A20" stroke-width="2.5" stroke-linejoin="round" filter="url(#crayon)"></path></svg>
+</div>
+</header>
+
+<!-- PLAYGROUND -->
+<section id="playground" style="max-width: 1240px; margin: 0 auto; padding: 24px 24px 88px; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 720px">
+<span style="font-family: 'Shantell Sans', cursive; font-size: 16px; font-weight: 700; color: #B4501F">Step 1 · no account needed</span>
+<h2 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: clamp(32px, 4.4vw, 48px); letter-spacing: -1px; line-height: 1.08">Knead it, and watch it change.</h2>
+<p style="margin: 0; color: #6E5A4B; font-size: 17px">Start from a type, then drag the sliders. Push an axis past the middle and it becomes a different type, so a different friend. The dials change how it moves and the calls it makes.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; align-items: start">
+
+<!-- controls -->
+<div style="display: flex; flex-direction: column; gap: 22px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">Start from a type</h3>
+<p style="margin: 0; font-size: 13px; color: #6E5A4B">{{pickHint}}</p>
+<div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px">
+<sc-for list="{{pickRows}}" as="g" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: {{g.color}}">{{g.name}}</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{g.types}}" as="t" hint-placeholder-count="4">
+<button type="button" class="tcard" data-on-click="{{t.pick}}" aria-pressed="{{t.on}}" title="{{t.title}}" style="{{t.style}}"><img src="{{t.src}}" alt=""><b>{{t.code}}</b><span>{{t.short}}</span></button>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px">
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">Shape it</h3>
+<button type="button" data-on-click="{{reset}}" style="min-height: 36px; padding: 0 14px; font: inherit; font-size: 13.5px; font-weight: 500; color: #3B2A20; background: transparent; border: 1.5px solid #E2D7C6; border-radius: 999px; cursor: pointer">Reset to {{base}}</button>
+</div>
+<span style="font-size: 11.5px; text-transform: uppercase; letter-spacing: .9px; color: #6E5A4B; font-weight: 700">Core type · decides who it is</span>
+<sc-for list="{{axes}}" as="s" hint-placeholder-count="4">
+<div style="display: grid; grid-template-columns: 1fr auto; gap: 0 8px; align-items: baseline">
+<label for="{{s.id}}" style="font-weight: 600; font-size: 14px">{{s.label}}</label>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E5A4B">{{s.out}}</span>
+<input id="{{s.id}}" class="rng" type="range" min="0" max="100" step="1" value="{{s.value}}" data-on-input="{{s.change}}" style="grid-column: 1 / -1">
+<div style="grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 12px; color: #6E5A4B"><span>{{s.lo}}</span><span>{{s.hi}}</span></div>
+</div>
+</sc-for>
+<span style="font-size: 11.5px; text-transform: uppercase; letter-spacing: .9px; color: #6E5A4B; font-weight: 700; margin-top: 6px">Style · decides how it acts</span>
+<sc-for list="{{dims}}" as="s" hint-placeholder-count="5">
+<div style="display: grid; grid-template-columns: 1fr auto; gap: 0 8px; align-items: baseline">
+<label for="{{s.id}}" style="font-weight: 600; font-size: 14px">{{s.label}}</label>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E5A4B">{{s.out}}</span>
+<input id="{{s.id}}" class="rng" type="range" min="0" max="10" step="1" value="{{s.value}}" data-on-input="{{s.change}}" style="grid-column: 1 / -1">
+<div style="grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 12px; color: #6E5A4B"><span>{{s.lo}}</span><span>{{s.hi}}</span></div>
+</div>
+</sc-for>
+<button type="button" data-on-click="{{toggleDims}}" style="align-self: flex-start; min-height: 40px; padding: 0 14px; font: inherit; font-size: 13.5px; font-weight: 600; color: #3B2A20; background: #FFFDF8; border: 1.5px dashed #C9BBA7; border-radius: 999px; cursor: pointer">{{dimsToggle}}</button>
+</div>
+</div>
+
+<!-- stage column -->
+<div style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div role="radiogroup" aria-label="What it is to you" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{roles}}" as="r" hint-placeholder-count="3">
+<button type="button" role="radio" aria-checked="{{r.on}}" data-on-click="{{r.pick}}" style="{{r.style}}">
+<span style="display: block; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 17px">{{r.label}}</span>
+<span style="display: block; font-size: 12px; line-height: 1.3; opacity: 0.85">{{r.sub}}</span>
+</button>
+</sc-for>
+</div>
+
+<div style="background: #FFFDF8; border: 2.5px solid #3B2A20; border-radius: 22px 30px 20px 32px / 30px 20px 32px 22px; padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 1.5px; color: #FFFDF8; background: {{accent}}; border-radius: 6px; padding: 2px 8px">{{code}}</span>
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">{{roleName}} {{animal}}</span>
+<label for="petname" style="margin-left: auto; font-size: 13px; color: #6E5A4B">Name</label>
+<input id="petname" type="text" value="{{nameVal}}" placeholder="{{animal}}" data-on-input="{{setName}}" maxlength="18" style="width: 8em; border: 0; border-bottom: 2px dashed #E2D7C6; background: transparent; font-family: 'Shantell Sans', cursive; font-size: 17px; color: #3B2A20; padding: 1px 2px">
+<span style="flex-basis: 100%; font-size: 12.5px; color: {{editedColor}}; font-weight: {{editedWeight}}">{{edited}}</span>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px">
+<span style="font-size: 12px; text-transform: uppercase; letter-spacing: .9px; color: #6E5A4B; font-weight: 700">{{dayHead}}</span>
+<button type="button" data-on-click="{{play}}" style="min-height: 34px; padding: 0 14px; font: inherit; font-size: 13px; font-weight: 600; color: #FFFDF8; background: #3B2A20; border: none; border-radius: 999px; cursor: pointer">{{playLabel}}</button>
+</div>
+<div class="strip">
+<sc-for list="{{moments}}" as="m" hint-placeholder-count="6">
+<button type="button" class="mchip" data-on-click="{{m.pick}}" aria-pressed="{{m.on}}" style="{{m.style}}"><time>{{m.time}}</time><span>{{m.title}}</span></button>
+</sc-for>
+</div>
+<sc-if value="{{showTyping}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+<span style="font-size: 12.5px; color: #6E5A4B">Or how you're typing:</span>
+<sc-for list="{{typings}}" as="k" hint-placeholder-count="5">
+<button type="button" data-on-click="{{k.pick}}" aria-pressed="{{k.on}}" style="{{k.style}}">{{k.label}}</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 18px; align-items: center">
+<div style="position: relative; height: 250px; display: flex; align-items: flex-end; justify-content: center; background: #F3EEE4; border-radius: 18px 14px 20px 12px / 14px 20px 12px 18px; overflow: hidden">
+<div style="position: absolute; left: 0; right: 0; bottom: 18px; height: 2px; background: #E2D7C6"></div>
+<div class="{{tremble}}" role="img" aria-label="{{stageAlt}}" style="{{charVars}}; margin-bottom: 18px">
+<div class="{{rigClass}}" style="{{rigStyle}}"><div class="all">
+<sc-for list="{{rigParts}}" as="rp" hint-placeholder-count="5"><img class="{{rp.cls}}" src="{{rp.src}}" alt="" style="{{rp.style}}"></sc-for>
+</div></div>
+</div>
+<sc-if value="{{showBadge}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 10px; bottom: 26px; display: flex; flex-direction: column; align-items: center; background: #FFFDF8; border: 1.5px solid #E2D7C6; border-radius: 12px; padding: 4px 6px">
+<img src="{{animalSrc}}" alt="" style="height: 34px; width: auto">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px">{{code}}</span>
+</div>
+</sc-if>
+<svg class="fx" viewBox="0 0 120 120" width="100" height="100" aria-hidden="true" style="position: absolute; right: 10%; top: 8px; overflow: visible">
+<sc-if value="{{fx.zzz}}" hint-placeholder-val="{{ false }}"><text class="z" x="10" y="90" style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 20px; fill: #6E5A4B">z</text><text class="z2" x="30" y="70" style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 26px; fill: #6E5A4B">z</text><text class="z3" x="54" y="46" style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 32px; fill: #6E5A4B">Z</text></sc-if>
+<sc-if value="{{fx.z1}}" hint-placeholder-val="{{ false }}"><text class="z" x="20" y="80" style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 24px; fill: #6E5A4B">z</text></sc-if>
+<sc-if value="{{fx.dots}}" hint-placeholder-val="{{ false }}"><circle class="pp" cx="20" cy="86" r="4" fill="#3B2A20"></circle><circle class="pp2" cx="36" cy="72" r="5.5" fill="#3B2A20"></circle><circle class="pp3" cx="56" cy="56" r="7" fill="#3B2A20"></circle></sc-if>
+<sc-if value="{{fx.sparkle}}" hint-placeholder-val="{{ false }}"><path class="tw" d="M30 50 Q30 62 42 62 Q30 62 30 74 Q30 62 18 62 Q30 62 30 50Z" fill="#E0B04B" stroke="#3B2A20" stroke-width="1.5"></path><path class="tw2" d="M70 20 Q70 30 80 30 Q70 30 70 40 Q70 30 60 30 Q70 30 70 20Z" fill="#E0B04B" stroke="#3B2A20" stroke-width="1.5"></path></sc-if>
+<sc-if value="{{fx.heart}}" hint-placeholder-val="{{ false }}"><path class="pp" d="M40 80 C22 68 26 54 36 54 C40 54 40 58 40 60 C40 58 40 54 44 54 C54 54 58 68 40 80Z" fill="#D9774A" stroke="#3B2A20" stroke-width="1.8"></path><path class="pp3" d="M74 46 C64 39 66 31 72 31 C74 31 74 33 74 34 C74 33 74 31 76 31 C82 31 84 39 74 46Z" fill="#D9774A" stroke="#3B2A20" stroke-width="1.5"></path></sc-if>
+<sc-if value="{{fx.sweat}}" hint-placeholder-val="{{ false }}"><path class="dr" d="M30 40 C25 50 23 54 30 59 C37 54 35 50 30 40Z" fill="#7FB2DB" stroke="#3B2A20" stroke-width="1.8"></path></sc-if>
+<sc-if value="{{fx.q}}" hint-placeholder-val="{{ false }}"><text class="pp" x="22" y="70" style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 40px; fill: #3B2A20">?</text></sc-if>
+<sc-if value="{{fx.puff}}" hint-placeholder-val="{{ false }}"><path class="pp" d="M20 50 l12 -9 M24 63 l14 0 M20 76 l12 9" fill="none" stroke="#3B2A20" stroke-width="3" stroke-linecap="round"></path></sc-if>
+<sc-if value="{{fx.crumbs}}" hint-placeholder-val="{{ false }}"><circle class="cr" cx="10" cy="100" r="2.6" fill="#B4501F"></circle><circle class="cr2" cx="22" cy="104" r="2.2" fill="#B4501F"></circle><circle class="cr3" cx="32" cy="98" r="2.6" fill="#B4501F"></circle></sc-if>
+</svg>
+<span style="position: absolute; top: 10px; left: 10px; font-size: 12px; font-weight: 700; color: #3B2A20; background: #FFFDF8; border: 1.5px solid #E2D7C6; padding: 2px 10px; border-radius: 999px">{{moodLabel}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<span style="font-size: 12px; text-transform: uppercase; letter-spacing: .9px; color: #6E5A4B; font-weight: 700">{{nowHead}}</span>
+<span style="font-weight: 700; font-size: 17px; overflow-wrap: anywhere">{{evtTitle}} <span style="font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 12px; color: #6E5A4B">{{evtMeta}}</span></span>
+<span style="font-size: 14px; color: #6E5A4B">{{sit}}</span>
+<div style="margin-top: 6px; border: 2px solid #3B2A20; border-radius: 18px 22px 20px 6px / 20px 18px 22px 6px; padding: 11px 13px; font-family: 'Shantell Sans', cursive; font-size: 16px; line-height: 1.38; background: #FFFDF8">{{line}}</div>
+</div>
+</div>
+
+<div style="border-top: 2px dashed #E2D7C6; padding-top: 12px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; text-transform: uppercase; letter-spacing: .9px; color: #6E5A4B; font-weight: 700">{{callHead}}</span>
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 22px; line-height: 1.2">{{call}}</span>
+<sc-if value="{{hasSay}}" hint-placeholder-val="{{ true }}"><span style="font-size: 15px; color: #3B2A20">{{say}}</span></sc-if>
+<span style="font-size: 12.5px; color: #6E5A4B">{{because}}</span>
+<sc-if value="{{hasNudge}}" hint-placeholder-val="{{ false }}"><span style="font-size: 13px; color: #6E5A4B; background: #F3EEE4; border-radius: 10px; padding: 6px 10px">{{nudge}}</span></sc-if>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 6px 16px; margin-top: 6px">
+<sc-for list="{{opts}}" as="o" hint-placeholder-count="4">
+<div style="min-width: 0; font-size: 12.5px; color: {{o.color}}; font-weight: {{o.weight}}">
+<div style="display: flex; justify-content: space-between; gap: 6px"><span style="{{o.labelStyle}}">{{o.label}}</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; white-space: nowrap">{{o.tag}}</span></div>
+<div style="height: 6px; border-radius: 4px; background: #EFE7DA; margin-top: 3px; overflow: hidden"><div style="{{o.bar}}"></div></div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{showStats}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 12px">
+<sc-for list="{{stats}}" as="x" hint-placeholder-count="4">
+<div style="min-width: 0">
+<div style="display: flex; justify-content: space-between; gap: 4px; font-size: 12px; font-weight: 600"><span>{{x.label}}</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 500">{{x.val}} <span style="color: {{x.dcolor}}">{{x.delta}}</span></span></div>
+<div style="height: 8px; border: 1.5px solid #3B2A20; border-radius: 6px; overflow: hidden; background: #FFFDF8; margin-top: 3px"><div style="{{x.bar}}"></div></div>
+</div>
+</sc-for>
+</div>
+<details style="border-top: 2px dashed #E2D7C6; padding-top: 10px">
+<summary style="cursor: pointer; font-weight: 600; font-size: 13.5px">Why it reacted this way</summary>
+<div style="overflow-x: auto">
+<div class="whyg" style="display: grid; grid-template-columns: minmax(150px, 1fr) repeat(4, auto); gap: 0 10px; font-size: 12.5px; margin-top: 8px">
+<span style="color: #6E5A4B; font-size: 11px; font-weight: 600">What moved it</span><span style="color: #6E5A4B; font-size: 11px; font-weight: 600; text-align: right">Energy</span><span style="color: #6E5A4B; font-size: 11px; font-weight: 600; text-align: right">Mood</span><span style="color: #6E5A4B; font-size: 11px; font-weight: 600; text-align: right">Fullness</span><span style="color: #6E5A4B; font-size: 11px; font-weight: 600; text-align: right">Affection</span>
+<sc-for list="{{why}}" as="w"><span style="border-top: 1px solid #E2D7C6; padding: 3px 0; {{w.rowStyle}}">{{w.label}}</span><span style="border-top: 1px solid #E2D7C6; padding: 3px 0; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: {{w.c0}}; {{w.rowStyle}}">{{w.d0}}</span><span style="border-top: 1px solid #E2D7C6; padding: 3px 0; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: {{w.c1}}; {{w.rowStyle}}">{{w.d1}}</span><span style="border-top: 1px solid #E2D7C6; padding: 3px 0; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: {{w.c2}}; {{w.rowStyle}}">{{w.d2}}</span><span style="border-top: 1px solid #E2D7C6; padding: 3px 0; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: {{w.c3}}; {{w.rowStyle}}">{{w.d3}}</span></sc-for>
+</div>
+</div>
+</details>
+</sc-if>
+
+<sc-if value="{{showMirrorPick}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; color: #6E5A4B">
+<span>In Mirror mode it looks like you:</span>
+<sc-for list="{{yous}}" as="y" hint-placeholder-count="2">
+<button type="button" data-on-click="{{y.pick}}" aria-pressed="{{y.on}}" style="{{y.style}}"><img src="{{y.src}}" alt="{{y.label}}" style="height: 34px; width: auto; display: block"></button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{showDownloadBtn}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 6px; border-top: 2px solid #3B2A20; padding-top: 16px">
+<button type="button" data-on-click="{{openSignup}}" class="btn" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px; padding: 0 24px; background: #3B2A20; color: #FFFDF8; font: inherit; font-weight: 600; font-size: 17px; border: none; border-radius: 22px 10px 24px 12px / 12px 24px 10px 22px; cursor: pointer">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"></path></svg>
+Bring {{name}} to my desktop</button>
+<span style="font-size: 13px; color: #6E5A4B; text-align: center">macOS and Windows · you'll create an account at this step · its personality file comes along</span>
+</div>
+</sc-if>
+<sc-if value="{{showSignup}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px; border-top: 2px solid #3B2A20; padding-top: 16px">
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 19px">One step before {{name}} moves in</span>
+<span style="font-size: 14.5px; color: #6E5A4B">An account keeps this personality synced between the web and the desktop app.</span>
+<label for="signupEmail" style="font-weight: 600; font-size: 14px">Email</label>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<input id="signupEmail" type="email" placeholder="you@school.edu" style="flex: 1 1 200px; min-height: 46px; padding: 0 14px; font: inherit; background: #FFFDF8; color: #3B2A20; border: 2px solid #E2D7C6; border-radius: 12px">
+<button type="button" data-on-click="{{doSignup}}" class="btn" style="min-height: 46px; padding: 0 20px; background: #3B2A20; color: #FFFDF8; font: inherit; font-weight: 600; border: none; border-radius: 999px; cursor: pointer">Create account and download</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{signedUp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 4px; border-top: 2px solid #3B2A20; padding-top: 16px">
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 19px">This is where {{name}} would download.</span>
+<span style="font-size: 14.5px; color: #6E5A4B">We're still in demo, so there's no build yet. Tell us below whether you'd actually install it.</span>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</section>
+
+<!-- WHAT IT DOES -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 24px 24px 88px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 700px">
+<span style="font-family: 'Shantell Sans', cursive; font-size: 16px; font-weight: 700; color: #B4501F">On your desktop</span>
+<h2 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: clamp(32px, 4.4vw, 48px); letter-spacing: -1px; line-height: 1.08">More than a voice. A point of view.</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px">
+<div style="background: #FFFDF8; border: 2px solid #3B2A20; border-radius: 20px 26px 18px 28px / 26px 18px 28px 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<img src="assets/bear.png" alt="" style="height: 74px; width: auto; align-self: flex-start">
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">Reads your calendar</h3>
+<p style="margin: 0; color: #6E5A4B; font-size: 15px">An exam, a date, a two-hour coding block. It knows what's coming, and its mood shifts with your day.</p>
+</div>
+<div style="background: #FFFDF8; border: 2px solid #3B2A20; border-radius: 26px 18px 28px 20px / 18px 28px 20px 26px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<img src="assets/horse.png" alt="" style="height: 74px; width: auto; align-self: flex-start">
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">Makes a real call</h3>
+<p style="margin: 0; color: #6E5A4B; font-size: 15px">A grinder tells you to finish tonight. A steady one sends you to bed. Different personalities, different decisions.</p>
+</div>
+<div style="background: #FFFDF8; border: 2px solid #3B2A20; border-radius: 18px 28px 20px 26px / 28px 20px 26px 18px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<img src="assets/fox.png" alt="" style="height: 74px; width: auto; align-self: flex-start">
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">Notices how you type</h3>
+<p style="margin: 0; color: #6E5A4B; font-size: 15px">Rushed, jittery, stalled. It reads typing rhythm only. What you type is never read or stored.</p>
+</div>
+<div style="background: #FFFDF8; border: 2px solid #3B2A20; border-radius: 28px 20px 26px 18px / 20px 26px 18px 28px; padding: 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; gap: 6px; align-items: flex-end"><img src="assets/girl.png" alt="" style="height: 74px; width: auto"><img src="assets/boy.png" alt="" style="height: 74px; width: auto"></div>
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 20px">Can even be you</h3>
+<p style="margin: 0; color: #6E5A4B; font-size: 15px">In Mirror mode it becomes your digital self, showing the state you're in instead of telling you what to do.</p>
+</div>
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" style="max-width: 1200px; margin: 0 auto; padding: 24px 24px 88px; display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 700px">
+<span style="font-family: 'Shantell Sans', cursive; font-size: 16px; font-weight: 700; color: #B4501F">Three steps, no prompts</span>
+<h2 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: clamp(32px, 4.4vw, 48px); letter-spacing: -1px; line-height: 1.08">How it works</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 8px 4px">
+<div style="display: flex; align-items: flex-end; gap: 12px"><span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 56px; line-height: .9; color: #C98A2E">1</span><img src="assets/pup.png" alt="" style="height: 70px; width: auto"></div>
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 22px">Knead it on the web</h3>
+<p style="margin: 0; color: #6E5A4B">Pick one of 16 types and drag the sliders. Push an axis past the middle and your friend turns into someone else. No account, no prompt writing.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 8px 4px">
+<div style="display: flex; align-items: flex-end; gap: 12px"><span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 56px; line-height: .9; color: #C2602F">2</span><img src="assets/cat.png" alt="" style="height: 64px; width: auto"></div>
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 22px">Bring it home</h3>
+<p style="margin: 0; color: #6E5A4B">The only step that asks you to sign up. Your companion moves onto your desktop and connects to the AI plan you already pay for. Nothing extra to pay us.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 8px 4px">
+<div style="display: flex; align-items: flex-end; gap: 12px"><span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 56px; line-height: .9; color: #6F8540">3</span><img src="assets/spaniel.png" alt="" style="height: 70px; width: auto"></div>
+<h3 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 700; font-size: 22px">Keep shaping it</h3>
+<p style="margin: 0; color: #6E5A4B">The same sliders live in the desktop app. Nudge it as you get to know each other: more blunt during finals, more chill on weekends.</p>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap; background: #3B2A20; color: #FFFDF8; border-radius: 22px 28px 20px 30px / 28px 20px 30px 22px; padding: 22px 26px">
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 22px">Bring your own AI plan.</span>
+<span style="flex: 1 1 320px; color: #E9DFD0">kneadthisone plugs into the subscription you already own. We don't resell model access, so there's no second bill.</span>
+</div>
+</section>
+
+<!-- FEEDBACK -->
+<section id="feedback" style="max-width: 1200px; margin: 0 auto; padding: 24px 24px 96px">
+<div style="background: #FFFDF8; border: 2.5px solid #3B2A20; border-radius: 24px 32px 22px 34px / 32px 22px 34px 24px; padding: clamp(22px, 4vw, 44px); display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 36px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<span style="font-family: 'Shantell Sans', cursive; font-size: 16px; font-weight: 700; color: #B4501F">Early demo</span>
+<h2 style="margin: 0; font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: clamp(30px, 4vw, 44px); letter-spacing: -1px; line-height: 1.08">Tell us what you think.</h2>
+<p style="margin: 0; color: #6E5A4B">We're building this with the first people who try it. What felt off, which friend you'd want next, and whether you'd really keep it on your desktop all help.</p>
+<img src="assets/penguin.png" alt="" class="waddle" style="height: 110px; width: auto; align-self: flex-start; margin-top: 8px">
+</div>
+<sc-if value="{{notSent}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<span style="font-weight: 600; font-size: 15px">First reaction</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{reactions}}" as="x" hint-placeholder-count="4">
+<button type="button" data-on-click="{{x.pick}}" aria-pressed="{{x.on}}" style="{{x.style}}">{{x.label}}</button>
+</sc-for>
+</div>
+<label for="fbType" style="font-weight: 600; font-size: 15px">Who did you end up with?</label>
+<input id="fbType" type="text" value="{{lookLabel}} · {{code}} · {{name}}" style="min-height: 46px; padding: 0 14px; font: inherit; background: #FFFDF8; color: #3B2A20; border: 2px solid #E2D7C6; border-radius: 12px">
+<label for="fbText" style="font-weight: 600; font-size: 15px">What would you change?</label>
+<textarea id="fbText" rows="4" placeholder="e.g. I'd want it to remind me to drink water, but nicely" style="padding: 12px 14px; font: inherit; background: #FFFDF8; color: #3B2A20; border: 2px solid #E2D7C6; border-radius: 12px; resize: vertical"></textarea>
+<label for="fbEmail" style="font-weight: 600; font-size: 15px">Email <span style="font-weight: 400; color: #6E5A4B">· optional, so we can follow up</span></label>
+<input id="fbEmail" type="email" placeholder="you@school.edu" style="min-height: 46px; padding: 0 14px; font: inherit; background: #FFFDF8; color: #3B2A20; border: 2px solid #E2D7C6; border-radius: 12px">
+<button type="button" data-on-click="{{sendFeedback}}" class="btn" style="align-self: flex-start; min-height: 50px; padding: 0 26px; background: #3B2A20; color: #FFFDF8; font: inherit; font-weight: 600; border: none; border-radius: 22px 10px 24px 12px / 12px 24px 10px 22px; cursor: pointer">Send feedback</button>
+</div>
+</sc-if>
+<sc-if value="{{sent}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; justify-content: center; gap: 10px">
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 30px">Thank you!</span>
+<p style="margin: 0; color: #6E5A4B">{{name}} says thanks too. We read every note.</p>
+</div>
+</sc-if>
+</div>
+</section>
+
+<footer style="max-width: 1200px; margin: 0 auto; padding: 22px 24px 40px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 2px dashed #E2D7C6; font-size: 14px; color: #6E5A4B">
+<span style="font-family: 'Shantell Sans', cursive; font-weight: 800; font-size: 18px; color: #3B2A20">kneadthisone</span>
+<span>Demo build · Made in Berkeley</span>
+</footer>
+</div>
+</template>
+<script src="assets/morphdom.min.js"></script>
+<script src="assets/mini.js"></script>
+<script>
+
+/* Knead engine, ported unchanged from the Personality Sculptor */
+var K = (function(){
+var AXK=['EI','NS','TF','JP'];
+var AX={EI:{a:'E',b:'I',an:'Extraverted',bn:'Introverted',name:'Energy'},
+        NS:{a:'N',b:'S',an:'Intuitive',bn:'Sensing',name:'Information'},
+        TF:{a:'T',b:'F',an:'Thinking',bn:'Feeling',name:'Decisions'},
+        JP:{a:'J',b:'P',an:'Judging',bn:'Perceiving',name:'Lifestyle'}};
+var DIMS=[
+ {k:'stability',name:'Emotional stability',lo:'Sensitive',hi:'Steady',lk:'sensitive',hk:'steady'},
+ {k:'humor',name:'Humor',lo:'Earnest',hi:'Playful',lk:'earnest',hk:'playful'},
+ {k:'directness',name:'Directness',lo:'Tactful',hi:'Blunt',lk:'tactful',hk:'blunt'},
+ {k:'risk',name:'Risk appetite',lo:'Cautious',hi:'Bold',lk:'cautious',hk:'bold'},
+ {k:'closeness',name:'Closeness',lo:'Reserved',hi:'Affectionate',lk:'reserved',hk:'warm'},
+ {k:'breadth',name:'Thinking range',lo:'Focused',hi:'Wide-ranging',lk:'focused',hk:'wide'},
+ {k:'confidence',name:'Self-confidence',lo:'Self-doubting',hi:'Assured',lk:'doubting',hk:'confident'},
+ {k:'tempo',name:'Tempo',lo:'Unhurried',hi:'Fast',lk:'slow',hk:'fast'},
+ {k:'drive',name:'Drive',lo:'Chill',hi:'Grind',lk:'chill',hk:'grind',mid:'even-keeled'}];
+var DIMBY={};DIMS.forEach(function(d){DIMBY[d.k]=d});
+var ORDER=['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+/* ax = % of E, N, T, J. s = the nine style scores in DIMS order. The first eight come from the MBTI personality guide; the ninth (drive) is new. */
+var TYPES={
+ INTJ:{role:'Architect',ax:[25,80,78,75],s:[7,3,8,6,2,4,8,5,8],animal:'Owl',ears:'tuft',tail:'stub',mark:'discs',acc:'glasses',beak:1},
+ INTP:{role:'Logician',ax:[22,82,80,28],s:[6,5,6,4,2,9,5,3,4],animal:'Cat',ears:'pointy',tail:'thin',acc:'pencil'},
+ ENTJ:{role:'Commander',ax:[75,70,82,85],s:[7,4,9,8,4,4,9,9,10],animal:'Lion',ears:'mane',tail:'tuft',mark:'muzzle'},
+ ENTP:{role:'Debater',ax:[72,85,68,20],s:[6,9,8,9,5,10,8,8,6],animal:'Fox',ears:'pointy',tail:'bushy',mark:'cheeks',acc:'bowtie'},
+ INFJ:{role:'Advocate',ax:[28,85,25,68],s:[4,3,3,3,4,6,4,3,6],animal:'Deer',ears:'antler',tail:'stub',acc:'scarf'},
+ INFP:{role:'Mediator',ax:[25,80,15,26],s:[2,5,2,4,5,8,3,2,2],animal:'Rabbit',ears:'long',tail:'stub',acc:'flower'},
+ ENFJ:{role:'Protagonist',ax:[78,72,20,72],s:[5,6,5,5,8,5,7,6,7],animal:'Dog',ears:'floppy',tail:'thin',mark:'muzzle',acc:'bandana'},
+ ENFP:{role:'Campaigner',ax:[72,80,35,30],s:[4,8,6,7,6,9,7,7,4],animal:'Otter',ears:'small',tail:'thick',mark:'muzzle',acc:'star'},
+ ISTJ:{role:'Logistician',ax:[20,15,75,88],s:[8,2,6,1,3,2,6,4,8],animal:'Beaver',ears:'small',tail:'flat',mark:'teeth',acc:'cap'},
+ ISFJ:{role:'Defender',ax:[26,22,24,78],s:[4,3,2,2,6,3,3,3,6],animal:'Bear',ears:'round',tail:'stub',mark:'muzzle',acc:'heart'},
+ ESTJ:{role:'Executive',ax:[76,20,78,86],s:[7,3,9,4,4,3,8,8,9],animal:'Ram',ears:'horn',tail:'stub',acc:'tie'},
+ ESFJ:{role:'Consul',ax:[80,28,22,76],s:[5,6,3,3,9,4,5,6,5],animal:'Sheep',ears:'wool',tail:'stub',acc:'bow'},
+ ISTP:{role:'Virtuoso',ax:[22,25,80,24],s:[8,5,7,7,1,5,7,4,3],animal:'Raccoon',ears:'pointy',tail:'striped',mark:'mask',acc:'goggles'},
+ ISFP:{role:'Adventurer',ax:[30,32,22,20],s:[3,5,2,5,4,7,3,3,2],animal:'Panda',ears:'roundf',tail:'stub',mark:'patches',acc:'beret'},
+ ESTP:{role:'Entrepreneur',ax:[85,18,70,15],s:[7,8,8,10,5,7,9,10,7],animal:'Tiger',ears:'round',tail:'thin',mark:'stripes',acc:'shades'},
+ ESFP:{role:'Entertainer',ax:[88,26,28,18],s:[5,10,6,8,8,8,7,9,3],animal:'Parrot',ears:'none',tail:'feather',mark:'cheekdots',acc:'partyhat',beak:1}
+};
+function groupOf(t){return t[1]==='N'?(t[2]==='T'?'nt':'nf'):(t[3]==='J'?'sj':'sp')}
+var GROUPNAME={nt:'Analyst',nf:'Diplomat',sj:'Sentinel',sp:'Explorer'};
+
+/* ---------- persona helpers ---------- */
+function preset(t){var T=TYPES[t],p={base:t,ax:{},s:{}};AXK.forEach(function(k,i){p.ax[k]=T.ax[i]});DIMS.forEach(function(d,i){p.s[d.k]=T.s[i]});return p}
+function typeOf(p){return AXK.map(function(k){return p.ax[k]>=50?AX[k].a:AX[k].b}).join('')}
+function pole(p,k){var v=p.ax[k],i=AX[k];return v>=50?{l:i.a,n:i.an,pct:v,o:i.b,on:i.bn}:{l:i.b,n:i.bn,pct:100-v,o:i.a,on:i.an}}
+function axv(p,k){return (p.ax[k]-50)/50}
+function sv(p,k){return (p.s[k]-5)/5}
+function isEdited(p){var q=preset(p.base);return AXK.some(function(k){return q.ax[k]!==p.ax[k]})||DIMS.some(function(d){return q.s[d.k]!==p.s[d.k]})}
+
+/* ---------- calendar: categories, keyword reader, base stat deltas ----------
+   Same pipeline as Milo: event title -> keyword category -> stat deltas (energy, mood, hunger, affection).
+   The first four categories keep Milo's numbers. The personality then bends the deltas. */
+var CATS={
+ sleep:{label:'Sleep',d:[24,6,-5,0],tags:['sleeping'],kw:['sleep','bed','bedtime','nap','lights out']},
+ exam:{label:'Exam or deadline',d:[-14,-6,-4,0],tags:['pressure','structured','problem'],kw:['exam','midterm','final','finals','quiz','test','deadline','due','interview','presentation','pitch','demo day','defense','submission']},
+ family:{label:'Family or date',d:[-3,8,0,12],tags:['people','company'],kw:['date','mom','dad','family','parents','anniversary','partner','girlfriend','boyfriend','grandma','grandpa','sister','brother','facetime','call home']},
+ workout:{label:'Workout',d:[-12,10,-12,0],tags:['handson','bold'],kw:['workout','gym','run','running','yoga','swim','climb','climbing','hike','pilates','soccer','basketball','tennis','lift','training','jog','cycling','spin']},
+ social:{label:'Social',d:[-6,8,-2,8],tags:['group','open','people','bold'],kw:['party','hangout','hang out','friends','club','mixer','birthday','game night','bar','karaoke','networking','meetup','social','drinks','potluck','happy hour']},
+ eating:{label:'Meal',d:[0,4,22,0],tags:['meal'],kw:['breakfast','lunch','dinner','brunch','meal','eat','snack','coffee','boba','ramen','restaurant','food','tea','supper']},
+ deepwork:{label:'Deep work',d:[-10,2,-4,0],tags:['solo','abstract','problem'],kw:['deep work','focus','coding','code','write','writing','design','build','research','draft','thesis','debug','project','work block','essay']},
+ meeting:{label:'Meeting',d:[-8,-2,-3,2],tags:['group','structured','problem'],kw:['meeting','standup','stand-up','sync','1:1','one-on-one','review','planning','retro','all-hands','call','check-in','workshop','kickoff','zoom']},
+ study:{label:'Class',d:[-8,-2,0,0],tags:['structured','abstract'],kw:['class','lecture','seminar','lab','homework','study','revision','reading','office hours','tutorial','course','section','discussion']},
+ commute:{label:'Commute',d:[-4,-1,-2,0],tags:['idle','alone'],kw:['bus','train','bart','subway','drive','commute','flight','uber','lyft','ride','travel','airport','ferry','metro']},
+ chores:{label:'Chores',d:[-5,0,-2,0],tags:['handson','structured'],kw:['laundry','groceries','grocery','clean','cleaning','errand','errands','dishes','pick up','bank','post office','pharmacy','tidy','chores','shopping']},
+ creative:{label:'Creative time',d:[-5,9,-3,2],tags:['handson','open','bold'],kw:['photo','shoot','guitar','paint','painting','sketch','draw','drawing','music','practice','piano','film','craft','pottery','band','rehearsal','dance']},
+ rest:{label:'Break',d:[8,8,-3,2],tags:['open','restful','alone'],kw:['break','free time','relax','rest','walk','meditate','game','gaming','movie','show','chill','stroll','park','tv']},
+ unknown:{label:'Unclear',d:[0,0,0,0],tags:['unclear'],kw:[]}
+};
+var CATORDER=['sleep','exam','family','workout','social','eating','deepwork','meeting','study','commute','chores','creative','rest'];
+CATORDER.forEach(function(c){CATS[c].re=new RegExp('(^|[^a-z0-9])('+CATS[c].kw.map(function(w){return w.replace(/[-:]/g,'\\$&')}).join('|')+')(?![a-z0-9])','i')});
+function classify(title){for(var i=0;i<CATORDER.length;i++){if(CATS[CATORDER[i]].re.test(title))return CATORDER[i]}return 'unknown'}
+
+/* How each trait bends a category. d = [energy, mood, hunger, affection] at full strength (axis 100% / slider at 10). */
+var RULES=[
+ {tag:'group',ax:'EI',d:[10,5,0,0],why:'a room full of people'},
+ {tag:'company',ax:'EI',d:[4,3,0,0],why:'time in company'},
+ {tag:'solo',ax:'EI',d:[-6,-4,0,0],why:'working alone'},
+ {tag:'alone',ax:'EI',d:[-2,-3,0,0],why:'quiet time alone'},
+ {tag:'structured',ax:'JP',d:[0,5,0,0],why:'a fixed plan'},
+ {tag:'open',ax:'JP',d:[0,-5,0,0],why:'no fixed plan'},
+ {tag:'sleeping',ax:'JP',d:[0,2,0,0],why:'a regular bedtime'},
+ {tag:'unclear',ax:'JP',d:[0,-5,0,0],why:'an unlabeled block'},
+ {tag:'abstract',ax:'NS',d:[0,4,0,0],why:'ideas and theory'},
+ {tag:'handson',ax:'NS',d:[-2,-4,0,0],why:'hands-on, concrete work'},
+ {tag:'meal',ax:'NS',d:[0,-2,0,0],why:'a simple physical comfort'},
+ {tag:'people',ax:'TF',d:[0,-3,0,-6],why:'people it cares about'},
+ {tag:'problem',ax:'TF',d:[0,3,0,0],why:'a problem to solve'},
+ {tag:'pressure',s:'stability',d:[4,8,0,0],why:'being under pressure'},
+ {tag:'pressure',s:'confidence',d:[0,5,0,0],why:'being judged'},
+ {tag:'pressure',s:'risk',d:[0,3,0,0],why:'high stakes'},
+ {tag:'sleeping',s:'stability',d:[4,2,0,0],why:'switching off at night'},
+ {tag:'bold',s:'risk',d:[0,3,0,0],why:'room to try something new'},
+ {tag:'group',s:'closeness',d:[0,0,0,6],why:'being around people'},
+ {tag:'people',s:'closeness',d:[0,2,0,6],why:'close company'},
+ {tag:'group',s:'humor',d:[0,3,0,0],why:'having an audience'},
+ {tag:'solo',s:'breadth',d:[0,-4,0,0],why:'one topic for a long stretch'},
+ {tag:'open',s:'breadth',d:[0,3,0,0],why:'room to wander'},
+ {tag:'unclear',s:'breadth',d:[0,3,0,0],why:'an open question'},
+ {tag:'idle',s:'tempo',d:[0,-4,0,0],why:'waiting around'},
+ {tag:'restful',s:'tempo',d:[-3,-3,0,0],why:'slowing down'},
+ {tag:'long',s:'tempo',d:[0,-5,0,0],why:'a long block'},
+ {tag:'backtoback',s:'tempo',d:[4,2,0,0],why:'no gap before it'},
+ {tag:'restful',s:'drive',d:[0,-4,0,0],why:'time not spent getting ahead'},
+ {tag:'problem',s:'drive',d:[0,3,0,0],why:'a chance to get ahead'},
+ {tag:'pressure',s:'drive',d:[0,2,0,0],why:'something to win'}
+];
+
+/* What the companion says. Keys: MBTI letter or the high/low name of a style slider; up/down are fallbacks. */
+var LINES={
+ sleep:{J:"Lights out on schedule. Tomorrow is already laid out.",P:"One more chapter... okay, now sleep.",sensitive:"Replaying today once more, then sleeping. Promise.",steady:"Out like a light. Nothing follows me to bed.",up:"Out like a light. See you on the other side.",down:"Tossing a bit. I'll get there.",
+  tip:["Phone down. Now.","Maybe leave the phone across the room tonight?"],joke:"Dream agenda: zero items."},
+ workout:{S:"Legs moving, head quiet. This is my kind of thinking.",N:"Halfway through I solved a problem I wasn't even working on.",bold:"New personal record or new bruise. Either way, a story.",cautious:"Warm-up first. Knees are not replaceable.",fast:"Go, go, go. Rest is for the cooldown.",slow:"Easing in. The first ten minutes don't count.",up:"That felt good. Sweaty, but good.",down:"Did it. Didn't love it. Counts anyway.",
+  tip:["Drink water. You always forget.","A glass of water afterwards would be kind to you."],joke:"My heart rate has filed a complaint."},
+ study:{N:"The lecture went off on a tangent, and the tangent was the best part.",S:"Give me a worked example and I'm happy. Got three today.",J:"Notes are tidy, deadlines are in. I like a class with a syllabus.",P:"Sat still for the whole thing. Please admire this.",fast:"Ninety minutes in one chair. My foot has been tapping since minute ten.",slow:"A steady pace. I had time to actually think.",up:"Learned something. Brain is pleasantly full.",down:"Long sit. My attention left around minute forty.",
+  tip:["Review the notes tonight or they're gone.","A five-minute skim of the notes tonight might help them stick."],joke:"I raised my hand in spirit."},
+ eating:{E:"Food and company. Best meeting of the day.",I:"A quiet meal. I needed that more than the food.",S:"Hot, salty, on time. No notes.",N:"Good food. I spent most of it planning something else.",up:"Fed and friendly again.",down:"Ate. Still a bit off.",
+  tip:["Eat something green.","Something green on the plate wouldn't hurt."],joke:"I was not hangry. I was assertively hungry."},
+ meeting:{E:"A room of people thinking out loud. I'm charged.",I:"Lots of voices. I said my one thing, and it was a good thing.",J:"Agenda, owners, deadlines. That's a real meeting.",P:"We planned the plan. I'd rather just start.",T:"Found the flaw in the plan in ten minutes. You're welcome.",F:"Everyone got heard. That matters more than the slides.",fast:"That could have been four sentences.",slow:"Back to back with no pause. I need a minute.",warm:"I like seeing everyone's faces, even on a call.",playful:"I got a laugh in the first five minutes. Productive.",up:"Useful one. We left with decisions.",down:"I'm a little flat after that one.",
+  tip:["Write down the one action item before you forget it.","It might be worth jotting down the one action item while it's fresh."],joke:"This meeting could have been a nap."},
+ deepwork:{I:"Door closed, headphones on. This is where I live.",E:"Hours alone with one document. Can I narrate it to someone?",focused:"One problem, all the way down. Perfect.",wide:"I opened nine tabs. Seven were relevant. Probably.",N:"The shape of the whole thing finally clicked.",S:"I'd rather have something to hold than something to imagine.",T:"A clean problem and time to crack it. Good.",F:"Fine work, but I missed having someone to do it for.",fast:"Long block. I got twitchy after the first hour.",slow:"No clock, no rush. I got deep.",up:"Real progress. I can feel it.",down:"That took more out of me than it gave back.",
+  tip:["Stand up. You've been sitting too long.","A short stretch would be nice after that long sit."],joke:"My tabs have tabs."},
+ social:{E:"So many people! I talked to all of them. Twice.",I:"I found one good conversation in the corner and stayed there.",playful:"I did a bit. It landed. I'm still glowing.",earnest:"Nice evening. I skipped the party games.",warm:"I hugged everyone on the way out. No regrets.",reserved:"Nice people. I kept it to names and handshakes.",P:"No plan, stayed late, zero regrets.",J:"I'd have liked an end time, but it was fun.",F:"Everyone I love in one room. Full heart.",T:"Good company. I may have started a debate.",bold:"I said yes to the thing nobody else would try.",up:"Good night. I like your people.",down:"Fun, but my battery is in the red.",
+  tip:["Leave when you're tired. Nobody's counting.","It's okay to head home when your battery dips."],joke:"I peaked at the snack table."},
+ exam:{steady:"Heart rate normal. One question at a time.",sensitive:"My stomach did a flip. Then another. We got through it.",confident:"I knew this. Walked in sure, walked out sure.",doubting:"I changed two answers and I'm still thinking about both.",bold:"Pressure is the fun part. Let's go again.",cautious:"Checked everything twice. Then once more.",J:"Prepared on schedule, so today was just execution.",P:"Crammed late, somehow pulled it off.",T:"It's a puzzle with a timer. I like puzzles.",F:"I kept thinking about who I'd let down. Nobody, it turns out.",up:"Done. And it went better than I feared.",down:"Done. I need a quiet minute.",
+  tip:["It's over. Stop re-grading it in your head.","It's finished now. Try not to replay it too much."],joke:"I blacked out and woke up holding a pencil."},
+ commute:{I:"Window seat, headphones, nobody talking to me. Bliss.",E:"I made a friend at the bus stop.",fast:"Why is this bus stopping at every single stop.",slow:"Nowhere to be for twenty minutes. I like the in-between.",up:"Easy ride.",down:"Transit ate some of my patience.",
+  tip:["Leave five minutes earlier next time.","Leaving a few minutes earlier might make this calmer."],joke:"Two stars for the bus. Would ride again."},
+ chores:{S:"Folded, sorted, put away. Deeply satisfying.",N:"Folding socks while thinking about the universe.",J:"List done. Every box checked.",P:"The laundry is clean. It's still in the basket, but clean.",up:"Small jobs, done.",down:"Necessary. Not thrilling.",
+  tip:["Do it now or it'll still be there tomorrow.","Getting it done now means a lighter tomorrow."],joke:"The sock count remains odd."},
+ rest:{P:"An unplanned hour. My favorite kind.",J:"Free time, yes, but I gave it a start and an end.",I:"Recharging. Do not disturb, kindly.",E:"The break is nice, but where is everyone?",wide:"Wandered, noticed things, came back with four ideas.",focused:"I'd rather be back on the one thing I was doing.",slow:"Nothing to do and all the time to do it.",fast:"Rested for ten minutes. That's enough, right?",up:"That was needed.",down:"I don't really know what to do with a gap.",
+  tip:["Take the break. All of it.","Let yourself have the whole break."],joke:"I did nothing, and I did it well."},
+ family:{F:"They sounded happy. That fixed my whole day.",T:"Good talk. I gave advice. Some of it was requested.",warm:"I didn't want to hang up.",reserved:"Short and warm. That's my style.",E:"I talked the whole time. They're used to it.",I:"One person, no noise. My kind of social.",up:"That was the best part of today.",down:"Good to check in, even when I'm tired.",
+  tip:["Call more often. They notice.","They'd love to hear from you a little more often."],joke:"I was told to eat more. Tradition holds."},
+ creative:{N:"Chased an idea that didn't exist this morning.",S:"Hands busy, details right. Good session.",bold:"Tried the weird version. The weird version is better.",cautious:"Stuck to what works, and polished it.",P:"No plan, just play.",J:"I'd like a brief next time, but it came together.",wide:"Started one piece, ended with three.",up:"I made a thing!",down:"Not my best session, but I showed up.",
+  tip:["Save the file. Back it up.","It might be worth saving a copy before you forget."],joke:"Art is suffering. This was only mildly inconvenient."},
+ unknown:{J:"No details on this one. That bothers me a little.",P:"A blank block. Could be anything. Exciting.",wide:"An unlabeled block. I've imagined six possibilities.",focused:"I can't prepare for a block with no name.",up:"I can't tell what this one is. Mysterious.",down:"I can't tell what this one is, and I'd like to know.",
+  tip:["Label your calendar.","A clearer title would help me help you."],joke:"TBD: To Be Dreaded?"}
+};
+
+/* ---------- decisions: every category carries a real dilemma. The personality picks the call, not just the wording. ----------
+   w = how much each trait pulls toward the option. E/N/T/J are the axis poles (negative = I/S/F/P); 'even' peaks when drive sits in the middle.
+   d = what taking that option does to [energy, mood, hunger, affection]. push = overruled when energy is too low. */
+var DECIDE={
+ sleep:{sit:"Bedtime, and today's list isn't finished.",opts:[
+  {short:'Sleep now',label:'Sleep now, it will keep',say:"Go to bed. Tired work is bad work, and the list will still be there at nine.",w:{drive:-1.2,stability:.6,J:-.3,confidence:.3},d:[4,2,0,0]},
+  {short:'Finish first',label:'Finish it, then sleep',say:"You won't sleep properly with this hanging over you. Finish it now, then sleep with a clear head.",w:{drive:.9,J:.6,stability:-.8,tempo:.3},d:[-6,3,0,0]},
+  {short:'20 min, then bed',label:'Twenty minutes on the worst part, then bed',say:"Give the hardest piece twenty minutes so tomorrow starts easier, then stop wherever you are.",w:{even:1,T:.4,breadth:-.2,confidence:.2},d:[-2,2,0,0]},
+  {short:'Up early',label:'Sleep now, set an early alarm',say:"Sleep on schedule and move the alarm up an hour. Morning you is faster than midnight you.",w:{J:.7,drive:.3,risk:-.5,stability:.2},d:[1,1,0,0]}]},
+ eating:{sit:"Mealtime, and work is piling up.",opts:[
+  {short:'Proper break',label:'Step away and eat properly',say:"Step away and eat properly. Thirty minutes without a screen pays for itself this afternoon.",w:{drive:-.9,tempo:-.5,N:-.3,stability:.2},d:[3,2,0,0]},
+  {short:'Eat with someone',label:'Find someone to eat with',say:"Find someone to eat with. You'll come back in a better mood than eating at your desk gives you.",w:{E:1,closeness:.7,T:-.3},d:[0,3,0,4]},
+  {short:'Eat at the desk',label:'Quick bite at the desk, keep going',say:"Grab something quick and eat while you work. Keep the momentum and take the break later.",w:{drive:1,tempo:.6,T:.3,E:-.2},d:[-3,-1,0,0]},
+  {short:'The usual',label:'The usual meal at the usual time',say:"Eat the usual thing at the usual time. One less decision today.",w:{J:.7,N:-.4,even:.6,risk:-.4},d:[0,0,0,0]}]},
+ study:{sit:"The lecture is recorded, so showing up is optional.",opts:[
+  {short:'Sit up front',label:'Go in person, sit near the front',say:"Go in person and sit near the front. Showing up is the cheapest way to stay ahead.",w:{drive:.8,J:.6,N:-.3,confidence:-.2},d:[-2,1,0,0]},
+  {short:'Watch it later',label:'Watch the recording at 1.5x',say:"Skip the room and watch the recording at 1.5x tonight. Same content, less time.",w:{tempo:.7,J:-.5,E:-.5,T:.3,even:.2},d:[3,0,0,0]},
+  {short:'Skip, read notes',label:'Skip it and read the notes',say:"Skip it and read the notes. If the notes make sense, you didn't need the lecture.",w:{drive:-1,confidence:.5,risk:.5,J:-.3},d:[6,1,0,0]},
+  {short:'Go with a friend',label:'Go, and sit with a friend',say:"Go, and sit with someone. You'll take better notes when you can compare them afterwards.",w:{E:.9,closeness:.6,T:-.3},d:[0,2,0,3]}]},
+ meeting:{sit:"The meeting has no agenda.",opts:[
+  {short:'Ask for agenda',label:'Ask for an agenda first',say:"Reply and ask what decision the meeting is for. If nobody can say, it shouldn't happen.",w:{directness:.8,T:.5,J:.5,confidence:.4},d:[0,0,0,0]},
+  {short:'Go and lead it',label:'Go, and set the agenda yourself',say:"Go, and use the first five minutes to set the agenda yourself. Someone has to.",w:{E:.8,drive:.6,tempo:.5,confidence:.4},d:[-2,1,0,0]},
+  {short:'Listen, speak once',label:'Go, listen, make one good point',say:"Go and mostly listen. Make your one point when it counts.",w:{E:-.8,directness:-.5,even:.5,stability:.2},d:[0,0,0,0]},
+  {short:'Make it a doc',label:'Propose a shared doc instead',say:"Suggest a shared doc instead. Everyone gets an hour back, including you.",w:{E:-.5,drive:-.5,T:.4,tempo:.3,J:-.2},d:[4,1,0,-1]}]},
+ deepwork:{sit:"A long work block and one big task.",opts:[
+  {short:'Hardest part first',label:'Hardest part first, straight through',say:"Start with the part you're avoiding and don't stop until it's done.",w:{drive:1,J:.5,breadth:-.5,confidence:.3},d:[-4,2,0,0]},
+  {short:'Timed sprints',label:'25 minutes on, 5 off',say:"Work in 25-minute sprints with 5-minute breaks. Steady beats heroic.",w:{even:.9,J:.4,N:-.3,stability:.2},d:[1,1,0,0]},
+  {short:'Fun part first',label:'Start with the part that interests you',say:"Begin with the piece that interests you and let it pull you into the rest.",w:{J:-.8,breadth:.6,drive:-.5,N:.3},d:[2,2,0,0]},
+  {short:'Work with someone',label:'Work alongside someone',say:"Find someone to work next to. You'll stay on task longer with company.",w:{E:1,closeness:.5},d:[0,2,0,2]}]},
+ workout:{sit:"A workout is scheduled and you're a bit tired.",opts:[
+  {short:'Go hard',label:'Go, and push for a personal best',say:"Go anyway and push. The tired days are the ones that count.",w:{drive:.9,risk:.7,tempo:.4,confidence:.3},d:[-5,3,0,0],push:1},
+  {short:'Stick to plan',label:'Do the planned session, nothing extra',say:"Do exactly what's on the plan. No more, no less.",w:{J:.8,even:.7,N:-.2},d:[0,0,0,0]},
+  {short:'Light version',label:'Swap it for a walk or a stretch',say:"Make it a walk or a stretch today. Moving a little beats skipping it or overdoing it.",w:{drive:-.9,risk:-.6,stability:-.3,tempo:-.3},d:[6,0,0,0]},
+  {short:'Bring a friend',label:'Go with a friend, try something new',say:"Text a friend and try a class neither of you has done. You won't notice you're tired.",w:{E:.8,J:-.4,closeness:.4,risk:.3},d:[0,2,0,3]}]},
+ exam:{sit:"One hour before the exam.",opts:[
+  {short:'One more pass',label:'One more full pass through the notes',say:"Use the whole hour. Go through everything once more, start to finish.",w:{drive:.9,confidence:-.7,J:.3,stability:-.2},d:[-3,-1,0,0]},
+  {short:'Weak spots only',label:'Review only the weak spots',say:"Spend thirty minutes on the two topics you're least sure of, then stop.",w:{T:.6,even:.8,confidence:.2,breadth:-.2},d:[0,0,0,0]},
+  {short:'Close the books',label:'Close the books and take a walk',say:"You know what you know. Close the books, walk, and arrive calm.",w:{drive:-.9,stability:.6,confidence:.6},d:[4,3,0,0]},
+  {short:'Quiz a classmate',label:'Quiz each other with a classmate',say:"Find a classmate and fire questions at each other. Saying it out loud makes it stick.",w:{E:1,closeness:.4,T:-.2},d:[0,1,0,2]}]},
+ social:{sit:"A party tonight, an early start tomorrow.",opts:[
+  {short:'Stay to the end',label:'Stay until the end',say:"Stay until the end. You'll remember the night, not the early start.",w:{E:.7,J:-.6,risk:.5,drive:-.4,humor:.3},d:[-5,3,0,2],push:1},
+  {short:'Home by ten',label:'Go for an hour, home by ten',say:"Go, see everyone, and be home by ten. You get both.",w:{J:.8,even:.7,risk:-.2},d:[3,0,0,0]},
+  {short:'Skip, get ahead',label:'Skip it and get ahead on work',say:"Skip this one and use the evening to get ahead. There will be other parties.",w:{drive:1,E:-.6,closeness:-.3},d:[2,-4,0,-6]},
+  {short:'Go with one friend',label:'Go, and stay close to one friend',say:"Go with one person you like and stay near them. Leave together when either of you is done.",w:{E:-.5,closeness:.6,stability:-.4,T:-.3},d:[1,1,0,2]}]},
+ commute:{sit:"Thirty minutes in transit.",opts:[
+  {short:'Flashcards',label:'Clear the inbox or run flashcards',say:"Use the ride. Thirty minutes of flashcards now is thirty you don't owe later.",w:{drive:1,tempo:.5,J:.3},d:[-2,0,0,0]},
+  {short:'Podcast',label:'Put on a podcast or audiobook',say:"Put on something interesting. You'll learn a little without it feeling like work.",w:{N:.6,breadth:.6,even:.5},d:[0,2,0,0]},
+  {short:'Window time',label:'Headphones on, look out the window',say:"Do nothing for half an hour. Your head needs the gap.",w:{drive:-.9,E:-.5,tempo:-.4},d:[3,2,0,0]},
+  {short:'Call someone',label:'Call someone you owe a call',say:"Call someone you've been meaning to call. The ride is the perfect length for it.",w:{E:.8,closeness:.7,T:-.3},d:[0,1,0,4]}]},
+ chores:{sit:"The chores have piled up.",opts:[
+  {short:'All of it now',label:'Do all of it now, in one sweep',say:"Do everything in one go, right now. An hour of annoyance, then it's gone.",w:{J:.7,tempo:.6,drive:.6},d:[-3,2,0,0]},
+  {short:'One thing today',label:'One load today, the rest on Saturday',say:"Do the one that matters most today and schedule the rest for the weekend.",w:{even:.9,J:.3,stability:.2},d:[0,0,0,0]},
+  {short:'Leave it',label:'Leave it, nothing is on fire',say:"Leave it. Nothing here is urgent, and you've done enough today.",w:{drive:-.9,J:-.7,stability:.2},d:[4,1,0,0]},
+  {short:'Make it fun',label:'Music on, do it with a roommate',say:"Put music on and rope someone in. It goes twice as fast with company.",w:{E:.7,humor:.6,closeness:.4},d:[0,2,0,2]}]},
+ rest:{sit:"A free hour with nothing planned.",opts:[
+  {short:'Get ahead',label:'Use it to get ahead on tomorrow',say:"Spend it on tomorrow's first task. Future you will be grateful.",w:{drive:1,J:.5,tempo:.3},d:[-8,-3,0,0]},
+  {short:'Real rest',label:'Real rest, no screens',say:"Rest properly: no phone, no tabs. You'll get more out of the next block.",w:{drive:-.6,stability:.4,even:.5,E:-.3},d:[3,1,0,0]},
+  {short:'Something unplanned',label:'Do something fun and unplanned',say:"Go do the thing you've been curious about. No plan, no goal.",w:{J:-.8,risk:.6,breadth:.5,drive:-.3},d:[0,3,0,0]},
+  {short:'See a friend',label:'Text a friend and meet up',say:"Text someone and go see them. An hour with a friend beats an hour of scrolling.",w:{E:.9,closeness:.7},d:[-2,2,0,5]}]},
+ family:{sit:"Family calls while you're in the middle of something.",opts:[
+  {short:'Pick up',label:'Pick up, the work can wait',say:"Pick up. The work will still be there, and this matters more.",w:{T:-.8,closeness:.6,drive:-.6},d:[0,2,0,3]},
+  {short:'Call back at nine',label:'Text a time, then call back',say:"Text that you'll call at nine, finish what you're doing, and then actually call.",w:{J:.7,T:.4,even:.6},d:[0,0,0,0]},
+  {short:'Ten minutes',label:'Pick up, keep it to ten minutes',say:"Answer, say you have ten minutes, and make them good minutes.",w:{drive:.8,tempo:.6,T:.4,directness:.3},d:[1,-2,0,-4]},
+  {short:'Long call',label:'Clear the evening for a long call',say:"Clear the evening and tell them everything. You've both been waiting for a proper talk.",w:{E:.7,T:-.5,closeness:.7,tempo:-.3},d:[-2,2,0,5]}]},
+ creative:{sit:"An hour of practice.",opts:[
+  {short:'Drill it',label:'Drill the hard part twenty times',say:"Take the hardest passage and repeat it until it's clean. That's where the progress is.",w:{drive:1,breadth:-.5,J:.4},d:[-3,-2,0,0]},
+  {short:'Play for fun',label:'Play what you enjoy',say:"Play what you love. Enjoying it is what keeps you coming back.",w:{drive:-1,J:-.3,stability:.1},d:[2,2,0,0]},
+  {short:'Try something new',label:"Try something you've never done",say:"Try a style or a tool you've never touched. It might be bad. That's fine.",w:{risk:.8,N:.5,breadth:.5,J:-.2},d:[0,0,0,0]},
+  {short:'Record, review',label:'Record it and review',say:"Record the session and listen back once. You'll hear what to fix.",w:{T:.6,N:-.4,even:.6,confidence:.2},d:[0,0,0,0]}]},
+ unknown:{sit:"A block with no label.",opts:[
+  {short:'Label it',label:'Find out what it is and label it',say:"Ask whoever set it what it's for, and rename it. Mystery blocks get wasted.",w:{J:.9,directness:.4,T:.2},d:[0,0,0,0]},
+  {short:'Keep as buffer',label:'Protect it as buffer time',say:"Keep it empty on purpose. Something will run over, and this is where it goes.",w:{even:.8,risk:-.5,stability:.2},d:[0,0,0,0]},
+  {short:'Fill it',label:'Fill it with a task',say:"Drop your next to-do into it. Empty calendar time is wasted calendar time.",w:{drive:1,tempo:.4},d:[-3,0,0,0]},
+  {short:'Leave it open',label:'Leave it open and see',say:"Leave it open and see what turns up.",w:{J:-.8,drive:-.5,breadth:.3},d:[2,1,0,0]}]}
+};
+var POLEAX={E:'EI',N:'NS',T:'TF',J:'JP'};
+var FLOOR=22; /* below this energy, options that cost sleep or push the body are overruled, whatever the drive */
+function tv(p,k){if(POLEAX[k])return axv(p,POLEAX[k]);if(k==='even')return 1-2*Math.abs(sv(p,'drive'));return sv(p,k)}
+function tlabel(p,k){
+  if(POLEAX[k]){var po=pole(p,POLEAX[k]);return po.n+' '+po.pct+'%'}
+  if(k==='even')return 'Even-keeled (drive '+p.s.drive+'/10)';
+  var d=DIMBY[k];return (sv(p,k)>=0?d.hi:d.lo)+' ('+d.name.toLowerCase()+' '+p.s[k]+'/10)'}
+function decide(p,cat,energy){return decideFrom(DECIDE[cat],p,energy)}
+function decideFrom(D,p,energy){
+  var res=D.opts.map(function(o){
+    var sc=0,cs=[];Object.keys(o.w).forEach(function(k){var c=o.w[k]*tv(p,k);sc+=c;cs.push({k:k,c:c})});
+    cs.sort(function(a,b){return b.c-a.c});
+    return {o:o,score:sc,because:cs.filter(function(x){return x.c>.05}).slice(0,2).map(function(x){return tlabel(p,x.k)}),blocked:!!o.push&&energy<FLOOR}});
+  var pick=null,raw=null;
+  res.forEach(function(r){if(!raw||r.score>raw.score)raw=r;if(!r.blocked&&(!pick||r.score>pick.score))pick=r});
+  return {sit:D.sit,all:res,pick:pick,overruled:raw!==pick?raw:null};
+}
+var MOODS={
+ idle:{label:'Settled',eyes:'dot',mouth:'smile',clip:'idle'},
+ happy:{label:'Happy',eyes:'happy',mouth:'big',clip:'happy'},
+ excited:{label:'Excited',eyes:'sparkle',mouth:'big',fx:'sparkle',clip:'run'},
+ loved:{label:'Loved',eyes:'happy',mouth:'smile',fx:'heart',clip:'happy'},
+ proud:{label:'Proud',eyes:'closed',mouth:'smirk',fx:'sparkle',clip:'happy'},
+ focused:{label:'Focused',eyes:'narrow',mouth:'flat',fx:'dots',clip:'think'},
+ content:{label:'Content',eyes:'closed',mouth:'smile',clip:'stretch'},
+ eating:{label:'Munching',eyes:'happy',mouth:'munch',fx:'crumbs',clip:'play'},
+ curious:{label:'Curious',eyes:'dot',mouth:'o',brow:'raise',fx:'q',clip:'curious'},
+ restless:{label:'Restless',eyes:'dot',mouth:'flat',brow:'raise',clip:'walk'},
+ flat:{label:'Unimpressed',eyes:'half',mouth:'flat',clip:'idle'},
+ sleepy:{label:'Sleepy',eyes:'half',mouth:'yawn',fx:'z1',clip:'yawn'},
+ asleep:{label:'Asleep',eyes:'closed',mouth:'o',fx:'zzz',clip:'sleep'},
+ drained:{label:'Drained',eyes:'flat',mouth:'wavy',fx:'sweat',clip:'yawn'},
+ anxious:{label:'Anxious',eyes:'wide',mouth:'wavy',brow:'worry',fx:'sweat',clip:'surprised'},
+ grumpy:{label:'Grumpy',eyes:'flat',mouth:'frown',brow:'angry',fx:'puff',clip:'confused'}
+};
+var START={energy:85,mood:60,hunger:50,affection:50};
+var STATK=['energy','mood','hunger','affection'];
+var STATN={energy:'Energy',mood:'Mood',hunger:'Fullness',affection:'Affection'};
+var WORK={study:1,deepwork:1,meeting:1,chores:1,exam:1};
+
+function react(p,ev,ctx){
+  var c=CATS[ev.cat],tags={};c.tags.forEach(function(t){tags[t]=1});
+  if(ev.cat==='eating'&&/(^|\s)(with|w\/)\s/i.test(ev.title))tags.company=1;
+  if(ev.dur>=90&&ev.cat!=='sleep'&&ev.cat!=='rest')tags.long=1;
+  if(ctx.gap!==null&&ctx.gap<=10&&ev.cat!=='sleep')tags.backtoback=1;
+  var parts=[{label:'Base for '+c.label.toLowerCase(),d:c.d.slice(),key:null}];
+  RULES.forEach(function(r){
+    if(!tags[r.tag])return;
+    var v,label,key;
+    if(r.ax){v=axv(p,r.ax);var po=pole(p,r.ax);label=po.n+' '+po.pct+'%';key=po.l}
+    else{v=sv(p,r.s);var dm=DIMBY[r.s];label=(v>=0?dm.hi:dm.lo)+' ('+dm.name.toLowerCase()+' '+p.s[r.s]+'/10)';key=v>=0?dm.hk:dm.lk}
+    var d=r.d.map(function(x){return Math.round(x*v)});
+    if(d.every(function(x){return x===0}))return;
+    parts.push({label:label+' · '+r.why,d:d,key:key});
+  });
+  var call=decide(p,ev.cat,ctx.stats.energy);
+  if(call.pick.o.d.some(function(x){return x!==0}))parts.push({label:'Its call: '+call.pick.o.label.toLowerCase(),d:call.pick.o.d.slice(),key:null});
+  var tot=[0,0,0,0];parts.forEach(function(q){q.d.forEach(function(x,i){tot[i]+=x})});
+  var after={};STATK.forEach(function(k,i){after[k]=Math.max(0,Math.min(100,ctx.stats[k]+tot[i]))});
+  var dm_=tot[1],mood;
+  var fastish=p.s.tempo>=6||p.ax.EI>=60;
+  if(ev.cat==='sleep')mood='asleep';
+  else if(after.energy<12)mood='drained';
+  else if(ev.cat==='unknown')mood='curious';
+  else if(ev.cat==='eating'&&dm_>=0)mood='eating';
+  else if(ev.cat==='family'&&dm_>=5)mood='loved';
+  else if(dm_>=9)mood=fastish?'excited':'happy';
+  else if(dm_>=4)mood=tags.pressure?'proud':WORK[ev.cat]?'focused':(ev.cat==='rest'||ev.cat==='commute')?'content':'happy';
+  else if(dm_>=0)mood=WORK[ev.cat]?'focused':'content';
+  else if(dm_>-5)mood=p.s.tempo>=7?'restless':p.s.stability<=3?'anxious':after.energy<45?'sleepy':'flat';
+  else mood=p.s.stability<=4?'anxious':p.s.directness>=7?'grumpy':'drained';
+  /* line: the trait that moved the result most gets to speak */
+  var L=LINES[ev.cat],best=null,bi=0;
+  parts.forEach(function(q){if(!q.key||!L[q.key])return;var im=Math.abs(q.d[1])+.5*Math.abs(q.d[0])+.5*Math.abs(q.d[3]);if(im>bi){bi=im;best=q}});
+  var line=best?L[best.key]:(dm_>=0?L.up:L.down);
+  if(ev.cat!=='sleep'&&after.energy<15)line='Running on fumes. '+line;
+  if(p.s.humor>=7&&mood!=='anxious'&&mood!=='drained')line+=' '+L.joke;
+  if(ev.cat!=='eating'&&ev.cat!=='sleep'&&after.hunger<20)line+=' Also, I need a snack.';
+  var say=soften(p,call.pick.o.say);
+  return {parts:parts,tot:tot,after:after,mood:mood,line:line,call:call,say:say,driver:best?best.key:null};
+}
+function simulate(p,events){
+  var stats={energy:START.energy,mood:START.mood,hunger:START.hunger,affection:START.affection},prevEnd=null,out=[];
+  events.forEach(function(ev){
+    var r=react(p,ev,{stats:stats,gap:prevEnd===null?null:ev.start-prevEnd});
+    r.before=stats;stats=r.after;prevEnd=ev.start+ev.dur;out.push(r);
+  });
+  return out;
+}
+var TNAME={calm:'Calm',flow:'In flow',rushed:'Rushed',anxious:'Jittery',stalled:'Stalled'};
+var TSIM={calm:[38,4,1.1],flow:[58,5,.6],rushed:[92,9,.4],anxious:[66,27,1.6],stalled:[9,6,7.5]};
+var TMOOD={mirror:{rushed:'restless',anxious:'anxious',stalled:'sleepy',flow:'focused',calm:'content'},assistant:{rushed:'curious',anxious:'curious',stalled:'restless',flow:'proud',calm:'content'}};
+var TLINE={
+ mirror:{rushed:"I'm going fast. Faster than I need to, maybe.",anxious:"I keep typing and deleting. Something is off.",stalled:"I've stopped. The cursor is just blinking at me.",flow:"I'm in it. Don't talk to me.",calm:"Easy pace. Nothing is chasing me."},
+ assistant:{rushed:"You've sped up a lot in the last minute.",anxious:"Lots of deleting. That's usually not about the typing.",stalled:"You've gone quiet. Still with me?",flow:"That's a good rhythm.",calm:"Nice and even."}};
+var TDEC={
+ rushed:{sit:"Typing fast.",opts:[
+  {short:'Ride it',label:'Let you ride it',say:"You're moving. Keep going. I'll hold every reminder until you stop.",w:{drive:.9,risk:.4,tempo:.5}},
+  {short:'Slow by a third',label:'Ask you to slow by a third',say:"Drop the pace by a third. You'll finish sooner with fewer fixes.",w:{even:.8,T:.4,stability:.3}},
+  {short:'Breathe first',label:'Three breaths, hands off the keys',say:"Hands off the keys for three breaths. Then carry on.",w:{drive:-.8,closeness:.4,stability:-.2,tempo:-.4}},
+  {short:'Name the deadline',label:'Ask what the deadline really is',say:"What's the actual deadline? Say it, and we'll cut what doesn't fit.",w:{J:.7,directness:.6,T:.3}}]},
+ anxious:{sit:"Typing fast, with a lot of deleting.",opts:[
+  {short:'Stop and breathe',label:'Stop you for three slow breaths',say:"Stop. Three slow breaths. The sentence will still be there.",w:{drive:-.6,closeness:.5,T:-.4,stability:.2}},
+  {short:'Ugly draft first',label:'Tell you to write it badly first',say:"Stop fixing as you go. Write it badly to the end, then edit once.",w:{T:.6,drive:.6,directness:.4,J:.2}},
+  {short:'Talk to me',label:"Ask what's bothering you",say:"Something seems to be bothering you. Tell me in one line what it is, if you want to.",w:{T:-.7,E:.5,closeness:.6}},
+  {short:'Five-minute break',label:'Send you on a five-minute break',say:"Step away for five minutes. I'll keep your place.",w:{even:.8,stability:.3,risk:-.3}}]},
+ stalled:{sit:"The typing has stopped.",opts:[
+  {short:'One bad sentence',label:'Get you to write one bad sentence',say:"Write one bad sentence. Just one. I'll wait.",w:{drive:.7,tempo:.5,directness:.3}},
+  {short:'Stand up',label:'Get you up for water',say:"Stand up, get some water, come back. You're fading.",w:{even:.7,N:-.3,stability:.3,J:.3}},
+  {short:'Call it a day',label:'Tell you to stop for today',say:"You're done for now. Close it and come back fresh.",w:{drive:-1,stability:.3}},
+  {short:'Think out loud',label:'Ask you to say it out loud',say:"Tell me what you're trying to say. Talking it through usually unsticks it.",w:{E:.8,closeness:.4,N:.3}}]},
+ flow:{sit:"Steady pace, few corrections.",opts:[
+  {short:'Stay quiet',label:'Stay silent and hold reminders',say:"(Says nothing, and holds every reminder until you pause.)",w:{E:-.7,closeness:-.3,stability:.4,drive:.3}},
+  {short:'Quiet cheer',label:'One quiet word of encouragement',say:"Nice rhythm. I'm right here.",w:{closeness:.8,E:.4,T:-.3}},
+  {short:'Raise the bar',label:'Push for the whole section',say:"Good pace. Can you finish the whole section before you stop?",w:{drive:.9,risk:.3,confidence:.3}},
+  {short:'Protect the block',label:'Mute everything for 25 minutes',say:"You're in it. I've muted everything for the next 25 minutes.",w:{J:.6,even:.6,T:.3}}]},
+ calm:{sit:"Relaxed, even typing.",opts:[
+  {short:'Leave you be',label:'Leave you alone',say:"(Stays out of the way.)",w:{E:-.6,drive:-.3,closeness:-.3}},
+  {short:'Light check-in',label:'A light check-in',say:"All good? Nod if yes.",w:{closeness:.7,E:.5}},
+  {short:'Nudge the pace',label:'Nudge you to pick up the pace',say:"Comfortable is fine, but the clock is moving. Pick it up a little.",w:{drive:1,tempo:.5}},
+  {short:'No notes',label:'Tell you the pace is right',say:"This is a good pace. No notes.",w:{even:.7,stability:.4,drive:-.2}}]}
+};
+/* assistant check-ins: how often it pings you during a block, and what it says */
+function nudgePlan(p,ev,energy){
+  var every=Math.max(20,Math.min(120,Math.round((95-p.s.drive*6-p.s.tempo*2+(5-p.s.closeness)*2)/5)*5));
+  var n=ev.cat==='sleep'?0:Math.floor(ev.dur/every),blunt=p.s.directness>=6,text;
+  if(energy<35)text=p.s.drive<=3?"You're fading. Stop here, it's fine.":blunt?"Eyes open. Stand up for one minute, then back to it.":"You look sleepy. A short walk might wake you up.";
+  else if(p.s.drive>=7)text=blunt?"Time check. Where are you on it?":"Quick check: how far along are you?";
+  else if(p.s.drive<=3)text=blunt?"Still fine? Drink some water.":"No rush. Just checking you're okay.";
+  else text=blunt?"Halfway. Keep this pace or change it?":"Halfway through. Is the pace still working for you?";
+  return {every:every,n:n,text:text};
+}
+/* pet: its own day, generated from the personality and independent of your calendar */
+function r15(m){return Math.round(m/15)*15}
+function petDay(p){
+  var J=axv(p,'JP'),Ev=axv(p,'EI'),N=axv(p,'NS'),s=p.s,g=groupOf(typeOf(p)),wake=r15(450-60*J-45*sv(p,'drive')),t=wake,out=[];
+  function add(dur,short,title,mood,line,gap){out.push({start:t,dur:dur,short:short,title:title,mood:mood,line:line});t+=dur+(gap||0)}
+  if(J>=0)add(30,'Morning routine','Makes the bed and checks the plan','focused',"Bed made. List written. The day may begin.");
+  else add(30,'Slow start','Rolls over twice, then gets up','sleepy',"Five more minutes. I said that ten minutes ago.",15);
+  if(N>=0)add(30,'New breakfast','Invents a breakfast','curious',"Today: berries on toast on a leaf. For science.");
+  else add(30,'Usual breakfast','Eats the same breakfast as always','eating',"Same bowl, same spot, same time. Perfect.");
+  if(s.drive>=7)add(120,'Training laps','Runs training laps around the desk','excited',"Lap forty. Yesterday was thirty-eight.",15);
+  else if(s.drive<=3)add(120,'Sunbathing','Sunbathes on the windowsill','content',"The sun moved, so I moved. That's the whole plan.",15);
+  else add(120,'Gardening','Tends the plant on the windowsill','focused',"Watered, turned, checked for bugs. It grew a little.",15);
+  if(g==='nt')add(90,'Takes things apart','Takes apart a clock to see how it works','focused',"I know how it works now. Putting it back is tomorrow's problem.");
+  else if(g==='nf')add(90,'Writes a letter','Writes a letter it will never send','content',"Dear moon. I have thoughts.");
+  else if(g==='sj')add(90,'Sorts collection','Sorts the acorn collection by size','focused',"Forty-one acorns, smallest to largest. One is missing.");
+  else add(90,'Builds a ramp','Builds a ramp and tests the ramp','excited',"The ramp works. I did not land well. Again.");
+  add(45,'Lunch','Eats lunch','eating',s.tempo>=7?"Done in four bites.":"I chew slowly. It's called savoring.",15);
+  if(Ev>=0)add(90,'Visits neighbours','Visits the pets next door','happy',"The cat next door has news. I have opinions about it.");
+  else add(90,'Reads in the box','Reads alone in the cardboard box','focused',"Do not knock on the box.");
+  add(r15(Math.max(30,Math.min(105,100-s.tempo*5-s.drive*4))),'Naps','Naps','asleep',s.drive>=7?"A scheduled recovery interval. Not a nap.":"Nap. Best part of the day.",15);
+  if(s.humor>=7)add(30,'Pranks you','Hides your cursor and watches you look for it','excited',"You checked behind the window. It's not behind the window.");
+  else if(s.closeness>=7)add(30,'Wants cuddles','Sits on your keyboard for attention','loved',"Your work is under me now. Pet me.");
+  else if(s.closeness<=3)add(30,'Watches you','Watches you from across the room','flat',"I'm not coming over. I'm supervising.");
+  else add(30,'Brings a gift','Brings you a leaf','happy',"I found this. It's for you.");
+  if(s.risk>=7)add(90,'Explores','Explores the top shelf (forbidden)','excited',"Nothing fell. Nothing important fell.");
+  else if(s.risk<=3)add(90,'Patrols','Patrols the usual route','focused',"Door, window, bowl, door. All secure.");
+  else add(90,'Rearranges nest','Rearranges the nest','content',"The cushion goes on the left now.");
+  add(30,'Dinner','Eats dinner','eating',"Dinner. I've been thinking about it since lunch.",15);
+  if(s.breadth>=7)add(90,'Starts projects','Starts three new projects','excited',"A fort, a map, and a song. None are finished. All are great.");
+  else if(s.breadth<=3)add(90,'Finishes puzzle',"Finishes yesterday's puzzle",'proud',"Last piece. I don't start a new one until the old one is done.");
+  else add(90,'Tinkers',"Tinkers with yesterday's project",'focused',"A bit more done. A bit left.");
+  if(s.stability<=3)add(30,'Worries','Worries about the leaf it lost','anxious',"Where did the leaf go. It was a good leaf.");
+  else if(s.stability>=7)add(30,'Moon watching','Watches the moon, unbothered','content',"Big moon. No thoughts.");
+  else add(30,'Winds down','Grooms and winds down','content',"Clean paws, quiet head.");
+  add(1440-(t-wake),'Asleep',J>=0?'Goes to bed on time':'Falls asleep in the middle of something','asleep',J>=0?"Lights out. Same time as every night.":"I'll just rest my eyes on this cushi");
+  return out;
+}
+function activityAt(pd,time){for(var i=0;i<pd.length;i++){if((((time-pd[i].start)%1440)+1440)%1440<pd[i].dur)return pd[i]}return pd[pd.length-1]}
+function eventAt(events,time){for(var i=0;i<events.length;i++){if((((time-events[i].start)%1440)+1440)%1440<events[i].dur)return events[i]}return null}
+var PETDEC={sit:'',opts:[
+ {short:'Leaves you alone',label:'Carries on without you',say:"It carries on with its own thing. You won't hear from it.",w:{closeness:-.8,E:-.5,stability:.3}},
+ {short:'Sits nearby',label:'Comes to sit next to you',say:"It comes over and settles next to you, quietly.",w:{closeness:.6,E:-.4,T:-.3,even:.2}},
+ {short:'Wants attention',label:'Demands your attention',say:"It walks across your keyboard until you look at it.",w:{closeness:.6,E:.7,humor:.5,stability:-.2}},
+ {short:'Invites you along',label:'Invites you to join in',say:"It drops what it's holding at your feet. It wants you to come too.",w:{E:.5,risk:.4,drive:-.3,J:-.3,breadth:.3}}]};
+function tempoMul(p){return +(1.5-p.s.tempo*.1).toFixed(2)}
+function blushOf(p){return +(.12+p.s.closeness*.055).toFixed(2)}
+function wobOf(p){return +(3.6-p.s.stability*.28).toFixed(2)}
+
+/* ---------- state ---------- */
+function fmt(m){m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mm=m%60;return (h<10?'0':'')+h+':'+(mm<10?'0':'')+mm}
+function E(title,hm,dur){var a=hm.split(':');return {title:title,start:(+a[0])*60+(+a[1]),dur:dur,cat:classify(title)}}
+function exampleDay(){return [
+ E('Morning run','07:00',30),E('Breakfast','08:00',30),E('Data Structures lecture','09:00',90),
+ E('Team standup + sprint planning','10:30',60),E('Lunch with Maya','12:00',45),
+ E('Deep work: design the onboarding flow','13:00',150),E('Bus downtown','15:45',30),
+ E('Statistics midterm','16:30',60),E('Hold: TBD','17:30',30),E('Laundry + groceries','18:15',45),
+ E("Birthday party at Sam's",'19:30',120),E('Call mom','22:00',30),E('Sleep','23:00',480)]}
+function soften(p,say){if(p.s.directness<=3&&say.charAt(0)!=='(')say='If you ask me: '+say.charAt(0).toLowerCase()+say.slice(1);if(p.s.closeness>=8&&say.charAt(0)!=='(')say+=" I'm rooting for you.";return say}
+
+var BANDS=[[0,2,'far '],[3,4,'leaning '],[5,5,'balanced'],[6,7,'leaning '],[8,10,'far ']];
+function bandIdx(v){for(var i=0;i<BANDS.length;i++){if(v>=BANDS[i][0]&&v<=BANDS[i][1])return i}return 2}
+function bandName(dim,v){var i=bandIdx(v);return i===2?(dim.mid||'balanced'):BANDS[i][2]+(i<2?dim.lo:dim.hi).toLowerCase()}
+
+return {AXK:AXK,AX:AX,DIMS:DIMS,DIMBY:DIMBY,TYPES:TYPES,ORDER:ORDER,groupOf:groupOf,GROUPNAME:GROUPNAME,preset:preset,typeOf:typeOf,pole:pole,isEdited:isEdited,CATS:CATS,MOODS:MOODS,STATK:STATK,STATN:STATN,START:START,simulate:simulate,decideFrom:decideFrom,PETDEC:PETDEC,petDay:petDay,activityAt:activityAt,eventAt:eventAt,nudgePlan:nudgePlan,TDEC:TDEC,TLINE:TLINE,TMOOD:TMOOD,TNAME:TNAME,TSIM:TSIM,fmt:fmt,exampleDay:exampleDay,soften:soften,tempoMul:tempoMul,blushOf:blushOf,wobOf:wobOf,bandName:bandName};
+})();
+var CH = {
+ rabbit:'assets/rabbit.png', fox:'assets/fox.png', cat:'assets/cat.png',
+ bear:'assets/bear.png', penguin:'assets/penguin.png', pup:'assets/pup.png',
+ spaniel:'assets/spaniel.png', horse:'assets/horse.png', girl:'assets/girl.png', boy:'assets/boy.png'};
+/* every type has a friend; the E and I versions of a type share one, and the E/I axis changes its size and bounce */
+var FRIEND = {INTJ:'penguin',ENTJ:'penguin',INTP:'fox',ENTP:'fox',INFJ:'spaniel',ENFJ:'spaniel',INFP:'rabbit',ENFP:'rabbit',
+ ISTJ:'cat',ESTJ:'cat',ISFJ:'bear',ESFJ:'bear',ISTP:'horse',ESTP:'horse',ISFP:'pup',ESFP:'pup'};
+var FNAME = {penguin:'Penguin',fox:'Fox',spaniel:'Spaniel',rabbit:'Rabbit',cat:'Cat',bear:'Bear',horse:'Horse',pup:'Pup'};
+var GCOL = {nt:'#7A4D6A',nf:'#55692B',sj:'#3D6890',sp:'#A9481C'};
+var GTINT = {nt:'#F1E3EC',nf:'#E8EED8',sj:'#DFEAF3',sp:'#F7E2D5'};
+var RNAME = {mirror:'Mirror',assistant:'Assistant',pet:'Pet'};
+var ROLEDEF = [{id:'mirror',label:'Mirror',sub:'Your digital self'},{id:'assistant',label:'Assistant',sub:'Reminds, nudges, checks in'},{id:'pet',label:'Pet',sub:'Lives a day of its own'}];
+var MAINDIMS = ['drive','stability','closeness','tempo','directness'];
+var RIGS = {"cat": {"W": 640, "H": 510, "cls": "rig", "vars": "--d: 1; --hk: 1; --sl: 21.3%", "parts": [{"cls": "p r-legFH", "src": "assets/cat-legFH.png", "style": "left: 23.59%; top: 56.08%; width: 20.16%; transform-origin: 45.7% 14.9%; z-index: 1"}, {"cls": "p r-legFF", "src": "assets/cat-legFF.png", "style": "left: 50.16%; top: 56.08%; width: 15.47%; transform-origin: 51.5% 15.0%; z-index: 1"}, {"cls": "p r-tail", "src": "assets/cat-tail.png", "style": "left: 1.56%; top: 2.16%; width: 25.78%; transform-origin: 54.5% 74.4%; z-index: 2"}, {"cls": "p r-legNH", "src": "assets/cat-legNH.png", "style": "left: 10.00%; top: 54.12%; width: 17.34%; transform-origin: 41.4% 16.1%; z-index: 2"}, {"cls": "p r-legNF", "src": "assets/cat-legNF.png", "style": "left: 61.09%; top: 54.12%; width: 27.19%; transform-origin: 40.8% 19.1%; z-index: 2"}, {"cls": "", "src": "assets/cat-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}, {"cls": "p r-head", "src": "assets/cat-head.png", "style": "left: 57.19%; top: 5.29%; width: 41.25%; transform-origin: 40.2% 83.3%; z-index: 4"}]}, "fox": {"W": 640, "H": 485, "cls": "rig", "vars": "--d: -1; --hk: 1; --sl: 20.8%", "parts": [{"cls": "p r-legFF", "src": "assets/fox-legFF.png", "style": "left: 16.25%; top: 55.88%; width: 23.28%; transform-origin: 64.4% 16.7%; z-index: 1"}, {"cls": "p r-legFH", "src": "assets/fox-legFH.png", "style": "left: 43.91%; top: 56.91%; width: 21.09%; transform-origin: 58.5% 15.8%; z-index: 1"}, {"cls": "p r-tail", "src": "assets/fox-tail.png", "style": "left: 59.06%; top: 12.78%; width: 39.38%; transform-origin: 12.7% 70.4%; z-index: 2"}, {"cls": "p r-legNF", "src": "assets/fox-legNF.png", "style": "left: 7.81%; top: 55.46%; width: 20.78%; transform-origin: 66.2% 20.3%; z-index: 2"}, {"cls": "p r-legNH", "src": "assets/fox-legNH.png", "style": "left: 58.44%; top: 56.08%; width: 20.78%; transform-origin: 34.6% 15.4%; z-index: 2"}, {"cls": "", "src": "assets/fox-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}, {"cls": "p r-head", "src": "assets/fox-head.png", "style": "left: 1.56%; top: 2.06%; width: 35.16%; transform-origin: 72.0% 79.4%; z-index: 4"}]}, "horse": {"W": 640, "H": 503, "cls": "rig nohead", "vars": "--d: -1; --hk: 1; --sl: 25.8%", "parts": [{"cls": "p r-legFF", "src": "assets/horse-legFF.png", "style": "left: 17.97%; top: 54.47%; width: 22.81%; transform-origin: 62.3% 12.4%; z-index: 1"}, {"cls": "p r-legFH", "src": "assets/horse-legFH.png", "style": "left: 42.19%; top: 54.47%; width: 19.84%; transform-origin: 48.8% 13.7%; z-index: 1"}, {"cls": "p r-tail", "src": "assets/horse-tail.png", "style": "left: 59.53%; top: 34.99%; width: 39.22%; transform-origin: 13.5% 19.5%; z-index: 2"}, {"cls": "p r-legNF", "src": "assets/horse-legNF.png", "style": "left: 10.16%; top: 47.91%; width: 24.38%; transform-origin: 71.2% 14.1%; z-index: 2"}, {"cls": "p r-legNH", "src": "assets/horse-legNH.png", "style": "left: 56.25%; top: 54.47%; width: 22.97%; transform-origin: 34.0% 11.8%; z-index: 2"}, {"cls": "", "src": "assets/horse-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}]}, "bear": {"W": 640, "H": 517, "cls": "rig", "vars": "--d: 1; --hk: 0.4; --sl: 19.6%", "parts": [{"cls": "p r-legFH", "src": "assets/bear-legFH.png", "style": "left: 17.34%; top: 58.80%; width: 22.19%; transform-origin: 50.0% 18.2%; z-index: 1"}, {"cls": "p r-legFF", "src": "assets/bear-legFF.png", "style": "left: 46.56%; top: 56.87%; width: 21.72%; transform-origin: 50.4% 17.2%; z-index: 1"}, {"cls": "p r-legNH", "src": "assets/bear-legNH.png", "style": "left: 1.88%; top: 55.32%; width: 20.00%; transform-origin: 46.9% 20.1%; z-index: 2"}, {"cls": "p r-legNF", "src": "assets/bear-legNF.png", "style": "left: 63.75%; top: 56.87%; width: 25.31%; transform-origin: 51.9% 17.7%; z-index: 2"}, {"cls": "", "src": "assets/bear-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}, {"cls": "p r-head", "src": "assets/bear-head.png", "style": "left: 53.75%; top: 2.32%; width: 44.38%; transform-origin: 38.0% 85.3%; z-index: 4"}]}, "pup": {"W": 640, "H": 579, "cls": "rig nolegs", "vars": "--d: 1; --hk: 0.8; --sl: 0.0%", "parts": [{"cls": "p r-tail", "src": "assets/pup-tail.png", "style": "left: 2.19%; top: 1.90%; width: 21.41%; transform-origin: 59.9% 72.8%; z-index: 2"}, {"cls": "", "src": "assets/pup-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}, {"cls": "p r-head", "src": "assets/pup-head.png", "style": "left: 44.69%; top: 42.66%; width: 41.41%; transform-origin: 27.9% 52.5%; z-index: 4"}]}, "spaniel": {"W": 640, "H": 582, "cls": "rig nolegs", "vars": "--d: 1; --hk: 0.8; --sl: 0.0%", "parts": [{"cls": "p r-tail", "src": "assets/spaniel-tail.png", "style": "left: 1.41%; top: 1.72%; width: 24.38%; transform-origin: 68.6% 79.6%; z-index: 2"}, {"cls": "", "src": "assets/spaniel-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}, {"cls": "p r-head", "src": "assets/spaniel-head.png", "style": "left: 60.00%; top: 35.05%; width: 34.69%; transform-origin: 21.6% 40.5%; z-index: 4"}]}, "rabbit": {"W": 543, "H": 640, "cls": "rig nolegs nohead", "vars": "--d: 1; --hk: 1; --sl: 0.0%", "parts": [{"cls": "p r-earA", "src": "assets/rabbit-earA.png", "style": "left: 50.46%; top: 1.88%; width: 29.10%; transform-origin: 35.4% 86.4%; z-index: 2"}, {"cls": "p r-earB", "src": "assets/rabbit-earB.png", "style": "left: 2.21%; top: 26.56%; width: 38.49%; transform-origin: 83.3% 27.9%; z-index: 2"}, {"cls": "p r-tail", "src": "assets/rabbit-tail.png", "style": "left: 81.40%; top: 68.12%; width: 16.39%; transform-origin: 33.7% 51.0%; z-index: 2"}, {"cls": "", "src": "assets/rabbit-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}]}, "penguin": {"W": 475, "H": 640, "cls": "rig nolegs nohead waddler", "vars": "--d: 1; --hk: 1; --sl: 0.0%", "parts": [{"cls": "p r-flipL", "src": "assets/penguin-flipL.png", "style": "left: 2.53%; top: 27.19%; width: 32.21%; transform-origin: 68.0% 14.3%; z-index: 2"}, {"cls": "p r-flipR", "src": "assets/penguin-flipR.png", "style": "left: 65.47%; top: 27.19%; width: 32.00%; transform-origin: 23.0% 13.9%; z-index: 2"}, {"cls": "", "src": "assets/penguin-body.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}]}, "girl": {"W": 267, "H": 640, "cls": "rig nolegs nohead", "vars": "--d: 1; --hk: 1; --sl: 0.0%", "parts": [{"cls": "", "src": "assets/girl.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}]}, "boy": {"W": 251, "H": 640, "cls": "rig nolegs nohead", "vars": "--d: 1; --hk: 1; --sl: 0.0%", "parts": [{"cls": "", "src": "assets/boy.png", "style": "left: 0; top: 0; width: 100%; z-index: 3"}]}};
+var MOOD2ACT = {idle:'idle',happy:'happy',excited:'run',loved:'happy',proud:'happy',focused:'idle',content:'idle',eating:'eat',curious:'curious',restless:'walk',flat:'sad',sleepy:'sad',asleep:'sleep',drained:'sad',anxious:'nervous',grumpy:'grumpy'};
+var FXMAP = {zzz:'zzz',z1:'z1',sparkle:'sparkle',sweat:'sweat',dots:'dots',q:'q',puff:'puff',crumbs:'crumbs',heart:'heart'};
+function clone(p){return JSON.parse(JSON.stringify(p))}
+function sgn(n){return n>0?'+'+n:n<0?'−'+Math.abs(n):'0'}
+function dcol(n){return n>0?'#3E7A3A':n<0?'#B23A2B':'#6E5A4B'}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.events = K.exampleDay();
+    this.state = { p: K.preset('ENFP'), role: 'assistant', sel: 7, psel: 3, typing: null, name: '', you: 'girl', allDims: false, playing: false, stage: 'idle', react: null, sent: false };
+  }
+  componentWillUnmount() { if (this.timer) clearInterval(this.timer); }
+  stopPlay() { if (this.timer) { clearInterval(this.timer); this.timer = null; } }
+  renderVals() {
+    var self = this, s = this.state, p = s.p, role = s.role, events = this.events;
+    var type = K.typeOf(p), T = K.TYPES[type], g = K.groupOf(type), friend = FRIEND[type];
+    var animal = FNAME[friend];
+    var name = (s.name || '').trim() || animal;
+    var view = role === 'pet' ? 'pet' : (s.typing ? 'typing' : 'cal');
+    var sim = K.simulate(p, events), pd = K.petDay(p);
+    var psel = Math.min(s.psel, pd.length - 1);
+    var mood, C, line, say = '', callHead, nowHead, evtTitle, evtMeta, sit, because = '', nudge = '', hasNudge = false, pickFn, r = null, asleepPet = false;
+    var pulled = function (C) { return C.pick.because.length ? 'Pulled there by: ' + C.pick.because.join(' and ') + '.' : 'No trait pulls strongly here, so this is a narrow call.'; };
+
+    if (view === 'cal') {
+      r = sim[s.sel]; var ev = events[s.sel];
+      mood = r.mood; C = r.call; line = r.line;
+      pickFn = function (t) { var q = K.simulate(K.preset(t), events)[s.sel]; return {mood: q.mood, short: q.call.pick.o.short}; };
+      nowHead = role === 'mirror' ? 'On your calendar' : 'On the calendar';
+      evtTitle = ev.title; evtMeta = K.fmt(ev.start) + '–' + K.fmt(ev.start + ev.dur) + ' · ' + K.CATS[ev.cat].label;
+      sit = 'The situation: ' + C.sit;
+      callHead = role === 'mirror' ? 'What you would likely do' : name + "'s call";
+      say = role === 'mirror' ? '' : r.say;
+      because = pulled(C) + (C.overruled ? ' It wanted "' + C.overruled.o.label + '", but energy is at ' + r.before.energy + ', so the wellbeing floor overruled it.' : '');
+      if (role === 'assistant') {
+        var np = K.nudgePlan(p, ev, r.before.energy); hasNudge = true;
+        nudge = ev.cat === 'sleep' ? 'No check-ins while you sleep.' : np.n ? 'Check-ins during this block: ' + np.n + ', about every ' + np.every + ' minutes. It would say: “' + np.text + '”' : 'No check-in here: the block is shorter than its ' + np.every + '-minute check-in interval.';
+      }
+    } else if (view === 'typing') {
+      var st = s.typing; mood = K.TMOOD[role][st]; C = K.decideFrom(K.TDEC[st], p, 100); line = K.TLINE[role][st];
+      pickFn = function (t) { return {mood: K.TMOOD[role][st], short: K.decideFrom(K.TDEC[st], K.preset(t), 100).pick.o.short}; };
+      var m = K.TSIM[st];
+      nowHead = 'Right now, from your typing'; evtTitle = K.TNAME[st]; evtMeta = m[0] + ' wpm · ' + m[1] + '% corrections · pause ' + m[2] + ' s';
+      sit = 'What it sees: ' + K.TDEC[st].sit + ' A rhythm is a hint, not a diagnosis.';
+      callHead = role === 'mirror' ? 'What you would want right now' : name + "'s move";
+      say = role === 'mirror' ? '' : K.soften(p, C.pick.o.say);
+      because = pulled(C);
+    } else {
+      var A = pd[psel], ue = K.eventAt(events, A.start); asleepPet = A.mood === 'asleep';
+      mood = A.mood; C = K.decideFrom(K.PETDEC, p, 100); line = A.line;
+      pickFn = function (t) { var a = K.activityAt(K.petDay(K.preset(t)), A.start); return {mood: a.mood, short: a.short}; };
+      nowHead = 'In ' + name + "'s own day"; evtTitle = A.title; evtMeta = K.fmt(A.start) + '–' + K.fmt(A.start + A.dur);
+      sit = 'You, at the same time: ' + (ue ? ue.title + '.' : 'nothing on your calendar.');
+      callHead = 'Does it come to you?';
+      say = asleepPet ? 'It is asleep and keeps to its own hours, whatever is on your calendar.' : C.pick.o.say;
+      because = asleepPet ? '' : pulled(C);
+    }
+    var M = K.MOODS[mood];
+
+    /* options, like the sculptor: its call, overruled, or score */
+    var lo = Infinity, hi = -Infinity; C.all.forEach(function (x) { lo = Math.min(lo, x.score); hi = Math.max(hi, x.score); });
+    var opts = (view === 'pet' && asleepPet) ? [] : C.all.map(function (x) {
+      var on = x === C.pick, w = hi > lo ? Math.round(8 + 92 * (x.score - lo) / (hi - lo)) : 50;
+      return { label: x.o.label, tag: on ? 'its call' : x.blocked ? 'overruled' : (x.score >= 0 ? '+' : '−') + Math.abs(x.score).toFixed(1),
+        color: on ? '#3B2A20' : '#6E5A4B', weight: on ? 700 : 400, labelStyle: x.blocked ? 'text-decoration: line-through' : '',
+        bar: 'height: 100%; border-radius: 4px; width: ' + w + '%; background: ' + (on ? GCOL[g] : '#C9BBA7') };
+    });
+
+    /* type picker: each card shows what that type would do right now */
+    var rows = [['nt', 'Analysts'], ['nf', 'Diplomats'], ['sj', 'Sentinels'], ['sp', 'Explorers']].map(function (gr) {
+      return { name: gr[1], color: GCOL[gr[0]], types: K.ORDER.filter(function (t) { return K.groupOf(t) === gr[0]; }).map(function (t) {
+        var q = pickFn(t), on = t === p.base;
+        return { code: t, src: CH[FRIEND[t]], short: q.short, title: K.TYPES[t].role + ' · ' + FNAME[FRIEND[t]], on: on ? 'true' : 'false',
+          style: on ? 'background: ' + GTINT[gr[0]] + '; border-color: #3B2A20' : '',
+          pick: function () { self.stopPlay(); self.setState({ p: K.preset(t), playing: false }); } };
+      }) };
+    });
+
+    /* sliders */
+    var axes = K.AXK.map(function (k) {
+      var i = K.AX[k], po = K.pole(p, k);
+      return { id: 'ax-' + k, label: i.name, lo: i.bn, hi: i.an, value: p.ax[k], out: po.l + ' ' + po.pct + '%',
+        change: function (e) { var q = clone(self.state.p); q.ax[k] = Number(e.target.value); self.setState({ p: q }); } };
+    });
+    var dimList = s.allDims ? K.DIMS : K.DIMS.filter(function (d) { return MAINDIMS.indexOf(d.k) >= 0; });
+    var dims = dimList.map(function (d) {
+      return { id: 's-' + d.k, label: d.name, lo: d.lo, hi: d.hi, value: p.s[d.k], out: p.s[d.k] + '/10 · ' + K.bandName(d, p.s[d.k]),
+        change: function (e) { var q = clone(self.state.p); q.s[d.k] = Number(e.target.value); self.setState({ p: q }); } };
+    });
+
+    /* look: type picks the friend; sliders change how it carries itself */
+    var tMul = K.tempoMul(p), wob = K.wobOf(p), blush = K.blushOf(p);
+    var scale = (0.86 + p.ax.EI * 0.0026).toFixed(3);
+    var sat = mood === 'drained' || mood === 'flat' ? 0.55 : mood === 'asleep' ? 0.8 : 1;
+    var glow = 'drop-shadow(0 0 ' + Math.round(4 + p.s.closeness * 1.6) + 'px rgba(232,130,100,' + blush.toFixed(2) + '))';
+    var isMirror = role === 'mirror';
+    var stageSrc = isMirror ? CH[s.you] : CH[friend];
+    var rk = isMirror ? s.you : friend, RG = RIGS[rk], act = MOOD2ACT[mood] || 'idle';
+    var boxH = isMirror ? 200 : 170, rw = Math.round(Math.min(250, boxH * RG.W / RG.H));
+    var rigClass = RG.cls + ' a-' + act;
+    var rigStyle = RG.vars + '; width: ' + rw + 'px; aspect-ratio: ' + RG.W + ' / ' + RG.H + '; filter: saturate(' + sat + ') ' + glow;
+    var fx = {}; Object.keys(FXMAP).forEach(function (k) { fx[k] = M.fx === k; });
+
+    var edited = K.isEdited(p) ? (type === p.base ? 'Kneaded from the ' + p.base + ' preset.' : 'Kneaded from the ' + p.base + ' preset. It now reads as ' + type + ', so it became the ' + animal + '.') : K.GROUPNAME[g] + ' preset, unedited.';
+
+    /* moments strip: your day, or the pet's own day */
+    var chipStyle = function (on) { return 'border: 2px solid ' + (on ? '#3B2A20; background: ' + GTINT[g] : '#E2D7C6; background: #FFFDF8'); };
+    var moments = view === 'pet' || role === 'pet' ? pd.map(function (a, i) {
+      return { time: K.fmt(a.start), title: a.short, on: i === psel ? 'true' : 'false', style: chipStyle(i === psel), pick: function () { self.stopPlay(); self.setState({ psel: i, playing: false }); } };
+    }) : events.map(function (e, i) {
+      var on = view === 'cal' && i === s.sel;
+      return { time: K.fmt(e.start), title: e.title, on: on ? 'true' : 'false', style: chipStyle(on), pick: function () { self.stopPlay(); self.setState({ sel: i, typing: null, playing: false }); } };
+    });
+    var pill = function (on) { return 'min-height: 36px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 999px; border: 2px solid ' + (on ? '#3B2A20; background: #3B2A20; color: #FFFDF8' : '#E2D7C6; background: #FFFDF8; color: #3B2A20'); };
+    var typings = ['calm', 'flow', 'rushed', 'anxious', 'stalled'].map(function (k) {
+      return { label: K.TNAME[k], on: s.typing === k ? 'true' : 'false', style: pill(s.typing === k), pick: function () { self.stopPlay(); self.setState({ typing: self.state.typing === k ? null : k, playing: false }); } };
+    });
+
+    var stats = r ? K.STATK.map(function (k, i) {
+      var lab = K.STATN[k]; if (isMirror) lab = 'Your ' + lab.toLowerCase();
+      return { label: lab, val: r.after[k], delta: sgn(r.tot[i]), dcolor: dcol(r.tot[i]), bar: 'height: 100%; width: ' + r.after[k] + '%; background: ' + GCOL[g] + '; transition: width .5s ease' };
+    }) : [];
+    var why = r ? r.parts.map(function (q) { var o = { label: q.label, rowStyle: '' }; q.d.forEach(function (x, i) { o['d' + i] = sgn(x); o['c' + i] = dcol(x); }); return o; }) : [];
+    if (r) { var tot = { label: 'Total for this event', rowStyle: 'font-weight: 700' }; r.tot.forEach(function (x, i) { tot['d' + i] = sgn(x); tot['c' + i] = dcol(x); }); why.push(tot); }
+
+    var roles = ROLEDEF.map(function (rd) {
+      var on = role === rd.id;
+      return Object.assign({}, rd, { on: on ? 'true' : 'false', pick: function () { self.stopPlay(); self.setState({ role: rd.id, playing: false }); },
+        style: 'min-height: 58px; padding: 8px 12px; text-align: left; font: inherit; cursor: pointer; border-radius: 16px 10px 18px 9px / 10px 18px 9px 16px; border: 2px solid ' + (on ? '#3B2A20; background: #3B2A20; color: #FFFDF8' : '#E2D7C6; background: #FFFDF8; color: #3B2A20') });
+    });
+    var yous = ['girl', 'boy'].map(function (y) {
+      var on = s.you === y;
+      return { label: y === 'girl' ? 'Girl' : 'Boy', src: CH[y], on: on ? 'true' : 'false', pick: function () { self.setState({ you: y }); },
+        style: 'padding: 3px 8px; cursor: pointer; border-radius: 10px; background: #FFFDF8; border: 2px solid ' + (on ? '#3B2A20' : '#E2D7C6') };
+    });
+    var chip = function (on) { return 'min-height: 44px; padding: 0 16px; font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; border-radius: 999px; border: 2px solid ' + (on ? '#3B2A20; background: #3B2A20; color: #FFFDF8' : '#E2D7C6; background: #FFFDF8; color: #3B2A20'); };
+    var reactions = ['I want this', 'Cute, not sure I’d use it', 'Confusing', 'Not for me'].map(function (label) {
+      return { label: label, on: s.react === label ? 'true' : 'false', style: chip(s.react === label), pick: function () { self.setState({ react: label }); } };
+    });
+
+    return {
+      pickHint: view === 'pet' ? 'Each card: what that type is doing at this time of its own day.' : view === 'typing' ? 'Each card: how that type would respond to this typing rhythm.' : 'Each card: what that type would decide for the selected event.',
+      pickRows: rows, axes: axes, dims: dims,
+      dimsToggle: s.allDims ? 'Show fewer dials' : 'Show all 9 style dials',
+      toggleDims: function () { self.setState({ allDims: !self.state.allDims }); },
+      reset: function () { self.setState({ p: K.preset(self.state.p.base) }); },
+      base: p.base, code: type, accent: GCOL[g], roleName: T.role, animal: animal, animalSrc: CH[friend],
+      name: name, nameVal: s.name, setName: function (e) { self.setState({ name: e.target.value }); },
+      edited: edited, editedColor: type !== p.base ? GCOL[g] : '#6E5A4B', editedWeight: type !== p.base ? 700 : 400,
+      roles: roles,
+      dayHead: role === 'pet' ? name + "'s own day" : role === 'mirror' ? 'Your day' : 'A day on the calendar',
+      playLabel: s.playing ? 'Stop' : 'Play the day',
+      play: function () {
+        if (self.timer) { self.stopPlay(); self.setState({ playing: false }); return; }
+        var isPet = self.state.role === 'pet', key = isPet ? 'psel' : 'sel', o = { playing: true, typing: null }; o[key] = 0; self.setState(o);
+        self.timer = setInterval(function () {
+          var n = (self.state.role === 'pet' ? K.petDay(self.state.p) : self.events).length, cur = self.state[key];
+          if (cur >= n - 1) { self.stopPlay(); self.setState({ playing: false }); return; }
+          var u = {}; u[key] = cur + 1; self.setState(u);
+        }, 2600);
+      },
+      moments: moments, showTyping: role !== 'pet', typings: typings,
+      tremble: (mood !== 'anxious' && p.s.stability <= 2) ? 'tremble' : '',
+      charVars: '--t: ' + tMul + '; --wob: ' + wob + '; transform: scale(' + scale + '); transform-origin: 50% 100%',
+      rigClass: rigClass, rigStyle: rigStyle, rigParts: RG.parts,
+      stageSrc: stageSrc, stageAlt: (isMirror ? 'You' : name + ' the ' + animal.toLowerCase()) + ', ' + M.label.toLowerCase(),
+      imgStyle: 'max-height: ' + (isMirror ? 200 : 170) + 'px; max-width: 250px; width: auto; height: auto; display: block; filter: saturate(' + sat + ') ' + glow,
+      showBadge: isMirror, fx: fx,
+      moodLabel: (isMirror ? 'Mirrors you: ' : '') + M.label + ' · ' + act,
+      nowHead: nowHead, evtTitle: evtTitle, evtMeta: evtMeta, sit: sit, line: line,
+      callHead: callHead, call: view === 'pet' && asleepPet ? 'No. It sleeps through it' : C.pick.o.label,
+      hasSay: !!say, say: say, because: because, hasNudge: hasNudge, nudge: nudge, opts: opts,
+      showStats: view === 'cal', stats: stats, why: why,
+      showMirrorPick: isMirror, yous: yous,
+      lookLabel: animal,
+      reactions: reactions,
+      showDownloadBtn: s.stage === 'idle', showSignup: s.stage === 'signup', signedUp: s.stage === 'done',
+      openSignup: function () { self.setState({ stage: 'signup' }); },
+      doSignup: function () { self.setState({ stage: 'done' }); },
+      notSent: !s.sent, sent: s.sent,
+      sendFeedback: function () { self.setState({ sent: true }); }
+    };
+  }
+}
+
+
+mountPage(Component);
+</script>
+</body>
+</html>
